@@ -25,3 +25,4 @@ OPERATION(falnum);
 OPERATION(contains);
 OPERATION(ranges);
 OPERATION(noempty);
+OPERATION(append);

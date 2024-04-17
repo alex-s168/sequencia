@@ -190,6 +190,16 @@ If the value is an empty string or array, replace it with null.
 ### Outputs
 - Any
 
+## `append`
+Appends a string or array onto a string or array
+
+### Arguments
+- String or array
+### Inputs
+- String or array
+### Outputs
+- String or array
+
 ## `falpha`, `fdigit`, `falnum`
 Remove all characters from the string that are not:
 - for `falpha`: a letter ('a' - 'z', 'A' - 'Z')

@@ -28,4 +28,6 @@ add_executable(sequencia main.c
         exec/split.c
         exec/contains.c
         exec/ranges.c
-        exec/noempty.c)
+        exec/noempty.c
+        exec/append.c
+)

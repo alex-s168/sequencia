@@ -7,6 +7,8 @@
 #include "minilibs/cli.h"
 #define FILELIB_IMPL
 #include "minilibs/filelib.h"
+#define MINIPROC_IMPL
+#include "minilibs/miniproc.h"
 
 static const char *flag(const int argc, char **argv, const char *name1, const char *name2, const char *defaul) {
     Flag flag = getFlag(argc, argv, name1);
