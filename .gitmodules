@@ -1,0 +1,3 @@
+[submodule "minilibs"]
+	path = minilibs
+	url = https://github.com/alex-s168/minilibs.git
