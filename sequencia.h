@@ -60,7 +60,7 @@ SQCommandIterItem sqcmd_next(SQCommand command, SQCommandIterState *state);
     SQCommandIterItem item; \
     while ((item = sqcmd_next((cmdi), &item##__iter)).cmd != NULL) block \
 }
-SQCommand sqparseheap(const char *strin);
+SQCommand sqparseheap(char *strin);
 void sqdestroyheap(SQCommand cmd);
 
 SQValue sqparse(char *str, char **end);

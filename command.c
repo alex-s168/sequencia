@@ -66,19 +66,16 @@ SQCommandIterItem sqcmd_next(const SQCommand command, SQCommandIterState *state)
     return item;
 }
 
-SQCommand sqparseheap(const char *strin) {
-    char *str = strdup(strin);
-
+SQCommand sqparseheap(char *strin) {
     SQCommand cmd;
     cmd.lines = NULL;
     cmd.lines_len = 0;
 
-    SPLITERATE(str, "\n", line) {
+    SPLITERATE(strin, "\n", line) {
         cmd.lines = realloc(cmd.lines, sizeof(char*) * (cmd.lines_len + 1));
         cmd.lines[cmd.lines_len ++] = strdup(line);
     }
 
-    free(str);
     return cmd;
 }
 
