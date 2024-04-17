@@ -25,4 +25,5 @@ add_executable(sequencia main.c
         exec/tokens.c
         exec/select.c
         exec/join.c
-        exec/split.c)
+        exec/split.c
+        exec/contains.c)

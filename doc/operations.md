@@ -159,6 +159,16 @@ Creates a new array of only elements for that the given block returns not 0 (= t
 ### Outputs
 - Array
 
+## `contains`
+Checks if a substring or subarray is present in the array
+
+### Arguments
+- Array or string
+### Inputs
+- Array or string
+### Outputs
+- Number: 0 (false), 1 (true)
+
 ## `falpha`, `fdigit`, `falnum`
 Remove all characters from the string that are not:
 - for `falpha`: a letter ('a' - 'z', 'A' - 'Z')

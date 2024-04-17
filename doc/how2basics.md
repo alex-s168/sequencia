@@ -1,25 +1,57 @@
-# Basics
+# Basic examples
 
 ### Parse `ls -l` output
-```
-split nl
+```shell
+ls -l | sequencia -s 'split nl
 map
     split " "
     select [1, 2]
     join " "
-join nl
+join nl'
+```
+
+### List all C files in the current directory
+```shell
+ls -l | sequencia -s 'split nl
+filter
+  split " "
+  select 8
+  contains ".c"
+map
+  split " "
+  select 8
+join nl'
 ```
 
 ### Check if a string is all alphanumeric
-```
-# "abc123"
-transform     # [v, fn(v)]
+```shell
+echo 'abc123' | sequencia -s 'transform
   falnum
-same
-# 1
+same'
 ```
 
-Stupider way of doing this:
+### List all C and H files in the current directory
+```shell
+ls -l | sequencia -s 'split nl
+filter
+  split " "
+  select 8
+
+  make 2
+  map 0
+    contains ".c"
+  map 1
+    contains ".h"
+  any
+
+map
+  split " "
+  select 8
+join nl'
+```
+
+### (Stupid) Check if a string is all alphanumeric
+Note: Comments are not yet implemented
 ```
 split ""      # make each character separate string
 map           # for every character (as string):

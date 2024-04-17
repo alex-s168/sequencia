@@ -22,3 +22,4 @@ OPERATION(filter);
 OPERATION(falpha);
 OPERATION(fdigit);
 OPERATION(falnum);
+OPERATION(contains);
