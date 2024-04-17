@@ -11,7 +11,7 @@ sequencia - Sequencia utility interpreter
 
 ## Examples
 ```
-ls -l | cmake-build-debug/sequencia -s 'split nl
+ls -l | sequencia -s 'split nl
 map
   split " "
   select [5, 6, 7, 8]
