@@ -1,4 +1,7 @@
 # Operations
+Note: All operations that take in indexes support negative indexes (index from the back of array)
+
+Note: All values that are null are ignored: operation skipped, not joined, ...
 
 ## `split`
 Split the given string at the given delimiter
@@ -168,6 +171,24 @@ Checks if a substring or subarray is present in the array
 - Array or string
 ### Outputs
 - Number: 0 (false), 1 (true)
+
+## `ranges`
+Select a set of ranges from an array
+
+### Arguments
+- Array of numbers: flattened array of pairs of start and end index
+### Inputs
+- Array of T
+### Outputs
+- Array of T
+
+## `noempty`
+If the value is an empty string or array, replace it with null.
+
+### Inputs
+- Any
+### Outputs
+- Any
 
 ## `falpha`, `fdigit`, `falnum`
 Remove all characters from the string that are not:

@@ -24,16 +24,22 @@ OPERATION(join) {
     char *res = malloc(1);
     size_t res_len = 0;
 
+    bool is0 = true;
     for (size_t i = 0; i < input.arr.len; i ++) {
-        char *b = sqstringify(input.arr.items[i]);
+        SQValue val = input.arr.items[i];
+        if (val.type == SQ_NULL)
+            continue;
+
+        char *b = sqstringify(val);
         if (b == NULL)
             continue;
 
-        if (i > 0) {
+        if (!is0) {
             res = realloc(res, res_len + delim_len + 1);
             memcpy(res + res_len, arg.str, delim_len);
             res_len += delim_len;
         }
+        is0 = false;
 
         const size_t len = strlen(b);
         res = realloc(res, res_len + len + 1);

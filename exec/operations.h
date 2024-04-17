@@ -23,3 +23,5 @@ OPERATION(falpha);
 OPERATION(fdigit);
 OPERATION(falnum);
 OPERATION(contains);
+OPERATION(ranges);
+OPERATION(noempty);
