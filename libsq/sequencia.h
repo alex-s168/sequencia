@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+#include "../kollektions/lists.h"
+
 typedef enum {
     SQ_NULL = 0,
     SQ_NUMBER,
@@ -18,10 +20,7 @@ typedef long long int SQNum;
 
 struct SQValue_s;
 
-typedef struct {
-    struct SQValue_s *items;
-    size_t len;
-} SQArr;
+typedef struct DynamicList SQArr;
 
 typedef struct SQValue_s {
     SQType type;
@@ -46,7 +45,9 @@ size_t indent(const char *str);
 
 SQArr sqarr_new(size_t len);
 void sqarr_add(SQArr *arr, SQValue val);
+void sqarr_reserve(SQArr *arr, size_t additional);
 void sqarr_free_rec(SQArr arr);
+void sqarr_free_norec(SQArr arr);
 
 SQCommand sqcommand_clone(SQCommand cmd);
 SQCommandIterState SQCommandIterState_new(SQCommand cmd);
