@@ -47,13 +47,13 @@ OPERATION(ranges) {
             end = input.arr.len - 1;
 
         if (start > end) {
-            const SQNum temp = start;
-            start = end;
-            end = temp;
-        }
-
-        for (size_t j = start; j <= end; j ++) {
-            sqarr_add(&res, sqdup(input.arr.items[j]));
+            for (long int j = start; j >= end; j --) {
+                sqarr_add(&res, sqdup(input.arr.items[j]));
+            }
+        } else {
+            for (size_t j = start; j <= end; j ++) {
+                sqarr_add(&res, sqdup(input.arr.items[j]));
+            }
         }
     }
 

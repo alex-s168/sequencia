@@ -3,23 +3,24 @@
 ### Parse `ls -l` output
 ```shell
 ls -l | sequencia -s 'split nl
+ranges [1, -1]
 map
-    split " "
-    select [1, 2]
-    join " "
+  split " "
+  select 8
 join nl'
 ```
+We need the `ranges [1, -1]` at the beginning,
+to get rid of the total amount of files.
 
 ### List all C files in the current directory
 ```shell
 ls -l | sequencia -s 'split nl
-filter
-  split " "
-  select 8
-  contains ".c"
+ranges [1, -1]
 map
   split " "
   select 8
+filter
+  contains ".c"
 join nl'
 ```
 
@@ -33,26 +34,23 @@ same'
 ### List all C and H files in the current directory
 ```shell
 ls -l | sequencia -s 'split nl
-filter
-  split " "
-  select 8
-
-  make 2
-  map 0
-    contains ".c"
-  map 1
-    contains ".h"
-  any
-
+ranges [1, -1]
 map
   split " "
   select 8
+filter
+  transform
+    contains ".c"
+  map 0
+    contains ".h"
+  any
 join nl'
 ```
 
 ### List all files and output date+time and file name seperated by tabs
 ```shell
 ls -l | sequencia -s 'split nl
+ranges [1, -1]
 map
   split " "
   make 2
@@ -62,17 +60,16 @@ map
   map 1
     select 8
   join tab
-  noempty
 join nl'
 ```
 
 ### List all files with date+time, file name and size
 ```shell
 ls -l | sequencia -s 'split nl
+ranges [1, -1]
 map
   split " "
   select [5,6,7, 8, 8]
-  noempty
 map
   use [0,1]
     join " "
@@ -102,6 +99,8 @@ join nl'
 ```shell
 ls -l | sequencia -s 'split nl
 ranges [1, -1]
+map
+  split " "
 use []
   run "date"
   split " "
@@ -109,14 +108,12 @@ use []
 axis
 filter
   map 1
-    split " "
     select [5, 6]
   same
 map
   select 1
-  split " "
   select 8
-join nl''
+join nl'
 ```
 
 ### Pretty print date
