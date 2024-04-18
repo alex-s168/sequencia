@@ -98,6 +98,27 @@ map
 join nl'
 ```
 
+### List all files that where changed today
+```shell
+ls -l | sequencia -s 'split nl
+ranges [1, -1]
+use []
+  run "date"
+  split " "
+  select [1, 2]
+axis
+filter
+  map 1
+    split " "
+    select [5, 6]
+  same
+map
+  select 1
+  split " "
+  select 8
+join nl''
+```
+
 ### Pretty print date
 ```shell
 date | sequencia -s 'split " "

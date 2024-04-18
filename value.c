@@ -81,6 +81,8 @@ char *sqstringify(SQValue val) {
         }
 
         case SQ_ARRAY: {
+            if (val.arr.len == 0)
+                return NULL;
             fprintf(stderr, "Can't automatically join array!\n");
             return NULL;
         }
