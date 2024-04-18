@@ -4,7 +4,11 @@ Programming language for simple and easy data processing.
 ```
 sequencia - Sequencia utility interpreter
   -S  --file [path]     REQUIRED: The path to a sequence script source file
+  -s  --script [scrisequencia - Sequencia utility interpreter
+  -S  --file [path]     REQUIRED: The path to a sequence script source file
   -s  --script [script] ^ ALTERNATIVE: The script to evaluate
+  -I  --input [path]    The input file for data; default: "-"
+  -d  --debug           Enable script developer debug outputpt] ^ ALTERNATIVE: The script to evaluate
   -I  --input [path]    The input file for data; default: "-"
   -d  --debug           Enable script developer debug output
 ```

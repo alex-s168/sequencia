@@ -18,6 +18,15 @@ static const char *flag(const int argc, char **argv, const char *name1, const ch
     return str;
 }
 
+static void normal(char *str, const SQCommand cmd, const bool debugOutput) {
+    const SQValue res = sqexecs(SQVAL_STR(str), cmd);
+
+    sqoutput(res, stdout, debugOutput, false, 0);
+    fputc('\n', stdout);
+}
+
+bool gDebug;
+
 int main(const int argc, char **argv) {
     if (flagExist(getFlag(argc, argv, "--help")) ||
         flagExist(getFlag(argc, argv, "-h"))) {
@@ -25,7 +34,8 @@ int main(const int argc, char **argv) {
         printf("  -S  --file [path]     REQUIRED: The path to a sequence script source file\n");
         printf("  -s  --script [script] ^ ALTERNATIVE: The script to evaluate\n");
         printf("  -I  --input [path]    The input file for data; default: \"-\"\n");
-        printf("  -d  --debug           Enable script developer debug output\n");
+        printf("  -d  --debug-output    Enable debug output (ignored with interactive debugger)\n");
+        printf("  -g  --debugger        Start interactive debugger; Requires \"-I\"!\n");
         fputc('\n', stdout);
         return 0;
         }
@@ -58,12 +68,19 @@ int main(const int argc, char **argv) {
         free(str);
     }
 
-    const bool debug = flagExist(getFlag(argc, argv, "-d")) ||
-                       flagExist(getFlag(argc, argv, "--debug"));
+    const bool debugOutput = flagExist(getFlag(argc, argv, "-d")) ||
+                             flagExist(getFlag(argc, argv, "--debug-output"));
+
+    const bool debugger = flagExist(getFlag(argc, argv, "-g")) ||
+                          flagExist(getFlag(argc, argv, "--debugger"));
 
     const char *input = flag(argc, argv, "-I", "--input", "-");
     FILE *f;
     if (strcmp(input, "-") == 0) {
+        if (debugger) {
+            fprintf(stderr, "Interactive debugger requires input file to be set!\n");
+            return 1;
+        }
         f = stdin;
     } else {
         f = fopen(input, "r");
@@ -80,10 +97,8 @@ int main(const int argc, char **argv) {
     if (f != stdin)
         fclose(f);
 
-    const SQValue res = sqexecs(SQVAL_STR(str), cmd);
-
-    sqoutput(res, stdout, debug, false, 0);
-    fputc('\n', stdout);
+    gDebug = debugger;
+    normal(str, cmd, debugOutput);
 
     return 0;
 }

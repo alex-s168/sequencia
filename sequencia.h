@@ -73,6 +73,8 @@ bool sqeq(const SQValue a, const SQValue b);
 SQValue sqexec(SQValue input, SQCommand cmd, SQValue arg_override);
 SQValue sqexec_single(SQValue input, const char *command, SQCommand children, SQValue arg);
 
+extern bool gDebug;
+
 #define SQVAL_NULL()     ((SQValue) { .type = SQ_NULL })
 #define SQVAL_NUM(numin) ((SQValue) { .type = SQ_NUMBER, .num = (numin) })
 #define SQVAL_ARR(arrin) ((SQValue) { .type = SQ_ARRAY, .arr = (arrin) })

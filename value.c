@@ -135,7 +135,7 @@ void sqoutput(SQValue val, FILE *out, bool debug, bool ptrs, size_t indent) {
                 fputc(']', out);
             }
             else {
-                fprintf(stderr, "Cannot print array! Try to run with `--debug`\n");
+                fprintf(stderr, "Cannot print array! Try to run with \"-d\" (or \"--debug-output\")\n");
             }
         }
         break;
