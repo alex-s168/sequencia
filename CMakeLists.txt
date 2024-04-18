@@ -35,4 +35,5 @@ add_executable(sequencia main.c
         exec/use.c
         exec/run.c
         exec/with.c
+        exec/flatten.c
 )

@@ -265,6 +265,31 @@ returns an array of the result and the rest of the elements in the array (everyt
 ### Outputs
 - Array or any
 
+## `flatten`
+Zero- to one-dimensional flatten.
+
+### Example
+`[[1, [2]], 3]` -> `[1, [2], 3]`
+
+### Inputs
+- Array or any
+### Outputs
+- Array
+
+## `deshape`
+N-dimensional flatten.
+
+### Example
+`[[1, [2]], 3]` -> `[1, 2, 3]`
+
+### Inputs
+- Array or any
+### Outputs
+- Array
+
+## `flatmap`
+Map and then flatten
+
 ## `falpha`, `fdigit`, `falnum`
 Remove all characters from the string that are not:
 - for `falpha`: a letter ('a' - 'z', 'A' - 'Z')

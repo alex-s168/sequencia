@@ -32,3 +32,6 @@ OPERATION(rev);
 OPERATION(use);
 OPERATION(run);
 OPERATION(with);
+OPERATION(flatten);
+OPERATION(deshape);
+OPERATION(flatmap);
