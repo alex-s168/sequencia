@@ -14,6 +14,7 @@ Split the given string at the given delimiter
 - Array of strings
 ### Special behaviour
 - When the delimiter is an empty string, split at every character in the string.
+- When no argument given, assume empty string.
 
 ## `join`
 Joins a list of strings or numbers together to a single string with the given delimiter
@@ -22,6 +23,16 @@ Joins a list of strings or numbers together to a single string with the given de
 - delimiter string
 ### Inputs
 - Array of strings or numbers
+### Outputs
+- String
+### Special behaviour
+- When no argument given, assume empty string.
+
+## `tolower`, `toupper`
+Convert a string to lower- / upper-case
+
+### Inputs
+- String
 ### Outputs
 - String
 

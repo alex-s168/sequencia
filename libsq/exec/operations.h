@@ -32,6 +32,8 @@ OPERATION(with);
 OPERATION(flatten);
 OPERATION(deshape);
 OPERATION(flatmap);
+OPERATION(tolower);
+OPERATION(toupper);
 
 OPERATION(falpha);
 OPERATION(fdigit);

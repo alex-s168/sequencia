@@ -1,4 +1,3 @@
-#include <ctype.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,6 +6,10 @@
 #include "operations.h"
 
 OPERATION(join) {
+    if (arg.type == SQ_NULL) {
+        arg = SQVAL_STR(""); // we don't free arg later so we don't need strdup
+    }
+
     if (arg.type != SQ_STRING) {
         fprintf(stderr, "Can only join with strings!\n");
         sqfree(input);

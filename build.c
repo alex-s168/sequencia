@@ -74,6 +74,7 @@ struct CompileData target_libsq_files[] = {
     SP(CT_C, "libsq/exec/transform.c"),
     SP(CT_C, "libsq/exec/use.c"),
     SP(CT_C, "libsq/exec/with.c"),
+    SP(CT_C, "libsq/exec/strmod.c"),
 
     DEP("kollektions/build/kollektions.a"),
     DEP("kollektions/build/kallok.a"),
