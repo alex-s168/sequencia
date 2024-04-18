@@ -19,7 +19,7 @@ SQValue sqexec_single(SQValue input, const char *command, SQCommand children, SQ
     return SQVAL_NULL();
 }
 
-SQValue sqexec(SQValue input, SQCommand cmd) {
+SQValue sqexec(SQValue input, SQCommand cmd, SQValue arg_override) {
     SQValue acc = input;
     SQITER(cmd, item, {
         if (item.cmd[0] == '\0')
@@ -33,7 +33,9 @@ SQValue sqexec(SQValue input, SQCommand cmd) {
         }
         const char *command = item.cmd;
         char *end;
-        const SQValue arg = sqparse(args, &end);
+        SQValue arg = sqparse(args, &end);
+        if (arg.type == SQ_NULL)
+            arg = arg_override;
         acc = sqexec_single(acc, command, item.children, arg);
     });
     for (size_t i = 0; i < cmd.lines_len; i ++) {

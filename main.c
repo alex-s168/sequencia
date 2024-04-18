@@ -7,8 +7,6 @@
 #include "minilibs/cli.h"
 #define FILELIB_IMPL
 #include "minilibs/filelib.h"
-#define MINIPROC_IMPL
-#include "minilibs/miniproc.h"
 
 static const char *flag(const int argc, char **argv, const char *name1, const char *name2, const char *defaul) {
     Flag flag = getFlag(argc, argv, name1);
@@ -82,7 +80,7 @@ int main(const int argc, char **argv) {
     if (f != stdin)
         fclose(f);
 
-    const SQValue res = sqexec(SQVAL_STR(str), cmd);
+    const SQValue res = sqexecs(SQVAL_STR(str), cmd);
 
     sqoutput(res, stdout, debug, false, 0);
     fputc('\n', stdout);

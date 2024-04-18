@@ -13,7 +13,7 @@ OPERATION(filter) {
     SQArr res = sqarr_new(0);
 
     for (size_t i = 0; i < input.arr.len; i ++) {
-        const SQValue r = sqexec(sqdup(input.arr.items[i]), sqcommand_clone(children));
+        const SQValue r = sqexecs(sqdup(input.arr.items[i]), sqcommand_clone(children));
         if (r.type == SQ_NULL)
             continue;
         if (r.type != SQ_NUMBER) {

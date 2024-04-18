@@ -200,6 +200,16 @@ Appends a string or array onto a string or array
 ### Outputs
 - String or array
 
+## `prepend`
+Prepends a string or array onto a string or array
+
+### Arguments
+- String or array
+### Inputs
+- String or array
+### Outputs
+- String or array
+
 ## `group`
 Combine the elements of the array into groups of N
 
@@ -231,6 +241,29 @@ result of the block as first element.
 - Array
 ### Outputs
 - Array
+
+## `run`
+Run a shell command.
+
+### Arguments
+- String
+### Inputs
+- String
+### Outputs
+- String
+
+## `with`
+Use the whole input or the first element of the input (if the input is an array)
+as argument for all commands in the given block that don't have an argument explicitly
+specified, and executes the block. Then returns the result or, if the input is an array,
+returns an array of the result and the rest of the elements in the array (everything but the first element).
+
+### Arguments
+- Block
+### Inputs
+- Array or any
+### Outputs
+- Array or any
 
 ## `falpha`, `fdigit`, `falnum`
 Remove all characters from the string that are not:

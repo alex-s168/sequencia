@@ -70,12 +70,14 @@ void sqfree(SQValue val);
 SQValue sqdup(const SQValue val);
 bool sqeq(const SQValue a, const SQValue b);
 
-SQValue sqexec(SQValue input, SQCommand cmd);
+SQValue sqexec(SQValue input, SQCommand cmd, SQValue arg_override);
 SQValue sqexec_single(SQValue input, const char *command, SQCommand children, SQValue arg);
 
 #define SQVAL_NULL()     ((SQValue) { .type = SQ_NULL })
 #define SQVAL_NUM(numin) ((SQValue) { .type = SQ_NUMBER, .num = (numin) })
 #define SQVAL_ARR(arrin) ((SQValue) { .type = SQ_ARRAY, .arr = (arrin) })
 #define SQVAL_STR(strin) ((SQValue) { .type = SQ_STRING, .str = (strin) })
+
+#define sqexecs(input,cmd) sqexec(input, cmd, SQVAL_NULL())
 
 #endif //SEQUENCIA_H

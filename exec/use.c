@@ -24,7 +24,7 @@ OPERATION(use) {
                 continue;
             sqarr_add(&args, sqdup(input.arr.items[i]));
         }
-        const SQValue res2 = sqexec(SQVAL_ARR(args), sqcommand_clone(children));
+        const SQValue res2 = sqexecs(SQVAL_ARR(args), sqcommand_clone(children));
         SQArr res = sqarr_new(1);
         res.items[0] = res2;
 
@@ -55,7 +55,7 @@ OPERATION(use) {
             return SQVAL_NULL();
         }
 
-        const SQValue res2 = sqexec(sqdup(input.arr.items[index]), sqcommand_clone(children));
+        const SQValue res2 = sqexecs(sqdup(input.arr.items[index]), sqcommand_clone(children));
 
         SQArr res = sqarr_new(input.arr.len);
         res.items[0] = res2;
