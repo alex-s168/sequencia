@@ -2,11 +2,14 @@
 
 size_t indent(const char *str) {
     size_t in = 0;
-    while (*str != '\0') {
-        if (*str != ' ')
+    for (; *str != '\0'; str++) {
+        if (*str == ' ') {
+            in ++;
+        } else if (*str == '\t') {
+            in += 8;
+        } else {
             break;
-        in ++;
-        str ++;
+        }
     }
     return in;
 }
