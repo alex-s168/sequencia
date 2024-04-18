@@ -3,7 +3,7 @@
 #include <string.h>
 
 #include "operations.h"
-#include "../minilibs/utils.h"
+#include "../../minilibs/utils.h"
 
 OPERATION(split) {
     if (arg.type != SQ_STRING) {

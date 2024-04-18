@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 #include "operations.h"
-#include "../minilibs/filelib.h"
+#include "../../minilibs/filelib.h"
 
 OPERATION(run) {
     if (arg.type != SQ_STRING) {

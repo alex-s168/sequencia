@@ -2,7 +2,7 @@
 #include <string.h>
 
 #include "sequencia.h"
-#include "minilibs/utils.h"
+#include "../minilibs/utils.h"
 
 SQCommand sqcommand_clone(const SQCommand cmd) {
     SQCommand new;

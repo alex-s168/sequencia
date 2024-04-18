@@ -5,7 +5,7 @@
 #include "sequencia.h"
 
 #include "exec/operations.h"
-#include "minilibs/filelib.h"
+#include "../minilibs/filelib.h"
 #undef OPERATION
 
 SQValue sqexec_single(SQValue input, const char *command, SQCommand children, SQValue arg) {

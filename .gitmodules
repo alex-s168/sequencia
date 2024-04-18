@@ -1,3 +1,9 @@
 [submodule "minilibs"]
 	path = minilibs
 	url = https://github.com/alex-s168/minilibs.git
+[submodule "kollektions"]
+	path = kollektions
+	url = https://github.com/alex-s168/kollektions.git
+[submodule "build_c"]
+	path = build_c
+	url = https://github.com/alex-s168/build.c.git

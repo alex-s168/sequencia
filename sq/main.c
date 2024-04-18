@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "sequencia.h"
+#include "../libsq/sequencia.h"
 
 #define CLI_IMPL
-#include "minilibs/cli.h"
+#include "../minilibs/cli.h"
 #define FILELIB_IMPL
-#include "minilibs/filelib.h"
+#include "../minilibs/filelib.h"
 
 static const char *flag(const int argc, char **argv, const char *name1, const char *name2, const char *defaul) {
     Flag flag = getFlag(argc, argv, name1);
