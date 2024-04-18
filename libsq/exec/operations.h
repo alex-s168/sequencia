@@ -38,3 +38,8 @@ OPERATION(fdigit);
 OPERATION(falnum);
 OPERATION(fpunct);
 OPERATION(fwhite);
+OPERATION(fnalpha);
+OPERATION(fndigit);
+OPERATION(fnalnum);
+OPERATION(fnpunct);
+OPERATION(fnwhite);

@@ -23,7 +23,8 @@ static SQValue filterstr_cmd(const SQValue input, int (*passes)(int c), const bo
     char *new = malloc(len + 1);
     char *ptr = new;
     for (size_t i = 0; i < len; i ++) {
-        if (passes(input.str[i]) ^ invert)
+        bool pass = passes(input.str[i]);
+        if ((pass && !invert) || (!pass && invert))
             *ptr++ = input.str[i];
     }
     *ptr = '\0';
@@ -31,22 +32,10 @@ static SQValue filterstr_cmd(const SQValue input, int (*passes)(int c), const bo
     return SQVAL_STR(new);
 }
 
-OPERATION(falpha) {
-    return filterstr_cmd(input, isalpha, false);
-}
+#define FN(name,impl) OPERATION(f##name) { return filterstr_cmd(input, impl, false); } OPERATION(f##n##name) { return filterstr_cmd(input, impl, true); }
 
-OPERATION(fdigit) {
-    return filterstr_cmd(input, isdigit, false);
-}
-
-OPERATION(falnum) {
-    return filterstr_cmd(input, isalnum, false);
-}
-
-OPERATION(fpunct) {
-    return filterstr_cmd(input, ispunct, false);
-}
-
-OPERATION(fwhite) {
-    return filterstr_cmd(input, isspace, false);
-}
+FN(alpha, isalpha)
+FN(digit, isdigit);
+FN(alnum, isalnum);
+FN(punct, ispunct);
+FN(white, isspace);
