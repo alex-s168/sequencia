@@ -6,6 +6,10 @@
 #include "../../minilibs/utils.h"
 
 OPERATION(split) {
+    if (arg.type == SQ_NULL) {
+        arg = SQVAL_STR(""); // we don't dup because it will never be freed
+    }
+
     if (arg.type != SQ_STRING) {
         fprintf(stderr, "Can only split with string delimeter argument!\n");
         sqfree(input);

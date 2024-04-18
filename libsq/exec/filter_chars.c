@@ -42,3 +42,11 @@ OPERATION(fdigit) {
 OPERATION(falnum) {
     return filterstr_cmd(input, isalnum, false);
 }
+
+OPERATION(fpunct) {
+    return filterstr_cmd(input, ispunct, false);
+}
+
+OPERATION(fwhite) {
+    return filterstr_cmd(input, isspace, false);
+}
