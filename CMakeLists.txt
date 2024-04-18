@@ -32,4 +32,5 @@ add_executable(sequencia main.c
         exec/append.c
         exec/group.c
         exec/rev.c
+        exec/use.c
 )

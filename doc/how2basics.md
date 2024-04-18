@@ -66,6 +66,18 @@ map
 join nl'
 ```
 
+### Pretty print date
+```bash
+date | sequencia -s 'split " "
+select [1, 2, 5, 3]
+use [0, 1]
+  rev
+  join "th "
+use [0, 1]
+  join " "
+join tab'
+```
+
 ### (Stupid) Check if a string is all alphanumeric
 Note: Comments are not yet implemented
 ```

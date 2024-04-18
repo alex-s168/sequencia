@@ -28,3 +28,4 @@ OPERATION(noempty);
 OPERATION(append);
 OPERATION(group);
 OPERATION(rev);
+OPERATION(use);
