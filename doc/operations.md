@@ -200,6 +200,24 @@ Appends a string or array onto a string or array
 ### Outputs
 - String or array
 
+## `group`
+Combine the elements of the array into groups of N
+
+### Arguments
+- Number
+### Inputs
+- Array of T
+### Outputs
+- Array of Array of T
+
+## `rev`
+Reverse the elements of an array
+
+### Inputs
+- Array
+### Outputs
+- Array
+
 ## `falpha`, `fdigit`, `falnum`
 Remove all characters from the string that are not:
 - for `falpha`: a letter ('a' - 'z', 'A' - 'Z')

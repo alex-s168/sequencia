@@ -30,4 +30,6 @@ add_executable(sequencia main.c
         exec/ranges.c
         exec/noempty.c
         exec/append.c
+        exec/group.c
+        exec/rev.c
 )

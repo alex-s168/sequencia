@@ -26,3 +26,5 @@ OPERATION(contains);
 OPERATION(ranges);
 OPERATION(noempty);
 OPERATION(append);
+OPERATION(group);
+OPERATION(rev);
