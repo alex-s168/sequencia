@@ -5,7 +5,7 @@
 
 OPERATION(use) {
     if (input.type != SQ_ARRAY) {
-        fprintf(stderr, "Use only operates on arrays!\n");
+        ERR("\"use\" only operates on arrays!");
         sqfree(input);
         return SQVAL_NULL();
     }
@@ -70,7 +70,7 @@ OPERATION(use) {
         return SQVAL_ARR(res);
     }
 
-    fprintf(stderr, "Use takes array of indecies or index as argument!\n");
+    ERR("\"use\" takes array of indecies or index as argument!");
     sqfree(input);
     return SQVAL_NULL();
 }

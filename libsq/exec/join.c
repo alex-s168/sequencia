@@ -11,7 +11,7 @@ OPERATION(join) {
     }
 
     if (arg.type != SQ_STRING) {
-        fprintf(stderr, "Can only join with strings!\n");
+        ERR("Can only \"join\" with string as argument!");
         sqfree(input);
         return SQVAL_NULL();
     }
@@ -19,7 +19,7 @@ OPERATION(join) {
     const size_t delim_len = strlen(arg.str);
 
     if (input.type != SQ_ARRAY) {
-        fprintf(stderr, "Can only join array!\n");
+        ERR("Can only \"join\" arrays!");
         sqfree(input);
         return SQVAL_NULL();
     }

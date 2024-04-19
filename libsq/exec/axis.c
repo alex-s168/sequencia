@@ -5,13 +5,13 @@
 
 OPERATION(axis) {
     if (input.type != SQ_ARRAY) {
-        fprintf(stderr, "Can only apply axis on array!\n");
+        ERR("Can only apply \"axis\" on array!");
         sqfree(input);
         return SQVAL_NULL();
     }
 
     if (input.arr.fixed.len == 0) {
-        fprintf(stderr, "Input to axis needs to have at least one element!\n");
+        ERR("Input to \"axis\" needs to have at least one element!");
         sqfree(input);
         return SQVAL_NULL();
     }

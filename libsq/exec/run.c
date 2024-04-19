@@ -8,7 +8,7 @@
 
 OPERATION(run) {
     if (arg.type != SQ_STRING) {
-        fprintf(stderr, "Run command needs string argument!\n");
+        ERR("\"run\" needs string argument!");
         sqfree(input);
         return SQVAL_NULL();
     }

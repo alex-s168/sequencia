@@ -5,13 +5,13 @@
 
 OPERATION(make) {
     if (arg.type != SQ_NUMBER) {
-        fprintf(stderr, "Argument to make needs to be length of array!\n");
+        ERR("Argument to \"make\" needs to be a positive number!");
         sqfree(input);
         return SQVAL_NULL();
     }
 
     if (arg.num <= 0) {
-        fprintf(stderr, "Invalid array length for make!\n");
+        ERR("Argument to \"make\" needs to be a **positive** number!");
         sqfree(input);
         return SQVAL_NULL();
     }

@@ -25,7 +25,12 @@ static void normal(char *str, const SQCommand cmd, const bool debugOutput) {
     fputc('\n', stdout);
 }
 
+static void errCallback(const char *str) {
+    fprintf(stderr, "%s\n", str);
+}
+
 bool gDebug;
+void (*gErrCallback)(const char *) = errCallback;
 
 int main(const int argc, char **argv) {
     if (flagExist(getFlag(argc, argv, "--help")) ||

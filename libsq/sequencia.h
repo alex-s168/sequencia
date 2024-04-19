@@ -78,6 +78,9 @@ SQValue sqexec(SQValue input, SQCommand cmd, SQValue arg_override);
 SQValue sqexec_single(SQValue input, const char *command, SQCommand children, SQValue arg);
 
 extern bool gDebug;
+extern void (*gErrCallback)(const char *msg);
+
+#define ERR(msg) gErrCallback(msg)
 
 #define SQVAL_NULL()     ((SQValue) { .type = SQ_NULL })
 #define SQVAL_NUM(numin) ((SQValue) { .type = SQ_NUMBER, .num = (numin) })

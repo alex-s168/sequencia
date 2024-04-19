@@ -62,7 +62,7 @@ SQValue sqexec_single(SQValue input, const char *command, SQCommand children, SQ
 #include "exec/operations.h"
 #undef OPERATION
 
-    fprintf(stderr, "Unknown command \"%s\"!\n", command);
+    ERR("Unknown command!");
     sqfree(input);
     return SQVAL_NULL();
 }

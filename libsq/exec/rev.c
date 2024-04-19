@@ -5,7 +5,7 @@
 
 OPERATION(rev) {
     if (input.type != SQ_ARRAY) {
-        fprintf(stderr, "Can only reverse elements of array!\n");
+        ERR("Can only \"rev\" elements of array!");
         sqfree(input);
         return SQVAL_NULL();
     }

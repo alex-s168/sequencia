@@ -1,11 +1,10 @@
 #include <stdbool.h>
-#include <stdio.h>
 
 #include "operations.h"
 
 OPERATION(invert) {
     if (input.type != SQ_NUMBER) {
-        fprintf(stderr, "Can only invert numbers (bools)!\n");
+        ERR("Can only invert numbers (booleans)!");
         sqfree(input);
         return SQVAL_NULL();
     }

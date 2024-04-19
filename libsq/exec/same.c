@@ -5,7 +5,7 @@
 
 OPERATION(same) {
     if (input.type != SQ_ARRAY) {
-        fprintf(stderr, "Same only operates on arrays!\n");
+        ERR("\"same\" only operates on arrays!");
         sqfree(input);
         return SQVAL_NULL();
     }

@@ -15,7 +15,7 @@ OPERATION(len) {
         sqfree(input);
         return SQVAL_NUM(len);
     }
-    fprintf(stderr, "Can only get length of strings and arrays!\n");
+    ERR("Can only get \"len\" of strings and arrays!");
     sqfree(input);
     return SQVAL_NULL();
 }

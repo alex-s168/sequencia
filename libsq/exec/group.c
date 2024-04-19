@@ -5,13 +5,13 @@
 
 OPERATION(group) {
     if (input.type != SQ_ARRAY) {
-        fprintf(stderr, "Can only group elements of array!\n");
+        ERR("Can only \"group\" elements of array!");
         sqfree(input);
         return SQVAL_NULL();
     }
 
     if (arg.type != SQ_NUMBER) {
-        fprintf(stderr, "Argument to group needs to be a number!\n");
+        ERR("Argument to \"group\" needs to be a number!");
         sqfree(input);
         return SQVAL_NULL();
     }

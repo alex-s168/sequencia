@@ -5,19 +5,19 @@
 
 OPERATION(ranges) {
     if (arg.type != SQ_ARRAY) {
-        fprintf(stderr, "Arg to ranges needs to be an array!\n");
+        ERR("Argument to \"ranges\" needs to be an array!");
         sqfree(input);
         return SQVAL_NULL();
     }
 
     if (arg.arr.fixed.len % 2 != 0) {
-        fprintf(stderr, "Arg to ranges needs to have an even amount of elements!\n");
+        ERR("Argument to \"ranges\" needs to have an even amount of elements!");
         sqfree(input);
         return SQVAL_NULL();
     }
 
     if (input.type != SQ_ARRAY) {
-        fprintf(stderr, "Ranges can only operate on arrays!\n");
+        ERR("\"ranges\" can only operate on arrays!");
         sqfree(input);
         return SQVAL_NULL();
     }
@@ -29,7 +29,7 @@ OPERATION(ranges) {
         const SQValue endVal = *sqarr_at(arg.arr, i + 1);
 
         if (startVal.type != SQ_NUMBER || endVal.type != SQ_NUMBER) {
-            fprintf(stderr, "Arg to ranges needs to be an array of numbers!\n");
+            ERR("Argument to \"ranges\" needs to be an array of numbers!");
             continue;
         }
 

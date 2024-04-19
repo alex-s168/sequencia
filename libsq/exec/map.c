@@ -5,7 +5,7 @@
 
 OPERATION(map) {
     if (input.type != SQ_ARRAY) {
-        fprintf(stderr, "Can only map array!\n");
+        ERR("\"map\" only operates on arrays!");
         sqfree(input);
         return SQVAL_NULL();
     }
@@ -53,7 +53,7 @@ OPERATION(map) {
         return input;
     }
 
-    fprintf(stderr, "Can only map index with index array or index num!\n");
+    ERR("Can only perform \"map\"-index with index array or index num!");
     sqfree(input);
     return SQVAL_NULL();
 }

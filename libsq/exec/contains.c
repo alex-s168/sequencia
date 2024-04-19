@@ -12,7 +12,7 @@ OPERATION(contains) {
 
     if (input.type == SQ_ARRAY) {
         if (arg.type != SQ_ARRAY) {
-            fprintf(stderr, "Contains needs an array as argument to search for in array!\n");
+            ERR("\"contains\" needs an array as argument to search for in array!");
             sqfree(input);
             return SQVAL_NULL();
         }
@@ -36,7 +36,7 @@ OPERATION(contains) {
 
     if (input.type == SQ_STRING) {
         if (arg.type != SQ_STRING) {
-            fprintf(stderr, "Contains needs a string as argument to search for in string!\n");
+            ERR("\"contains\" needs a string as argument to search for in string!");
             sqfree(input);
             return SQVAL_NULL();
         }
@@ -46,7 +46,7 @@ OPERATION(contains) {
         return SQVAL_NUM(where == NULL ? 0 : 1);
     }
 
-    fprintf(stderr, "Contains only operates on arrays and strings!\n");
+    ERR("\"contains\" only operates on arrays and strings!");
     sqfree(input);
     return SQVAL_NULL();
 }

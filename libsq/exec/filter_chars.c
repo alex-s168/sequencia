@@ -8,7 +8,7 @@
 
 static SQValue filterstr_cmd(const SQValue input, int (*passes)(int c), const bool invert) {
     if (input.type != SQ_STRING) {
-        fprintf(stderr, "Expected string!\n");
+        ERR("expected string!");
         sqfree(input);
         return SQVAL_NULL();
     }

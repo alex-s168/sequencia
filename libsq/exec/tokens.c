@@ -7,7 +7,7 @@
 
 OPERATION(tokens) {
     if (input.type != SQ_STRING) {
-        fprintf(stderr, "Can only tokenize string!\n");
+        ERR("Can only get \"tokens\" of string!");
         sqfree(input);
         return SQVAL_NULL();
     }

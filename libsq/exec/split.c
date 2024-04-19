@@ -1,5 +1,4 @@
 #include <stdbool.h>
-#include <stdio.h>
 #include <string.h>
 
 #include "operations.h"
@@ -11,13 +10,13 @@ OPERATION(split) {
     }
 
     if (arg.type != SQ_STRING) {
-        fprintf(stderr, "Can only split with string delimeter argument!\n");
+        ERR("Can only \"split\" with string delimeter argument!");
         sqfree(input);
         return SQVAL_NULL();
     }
 
     if (input.type != SQ_STRING) {
-        fprintf(stderr, "Can only split strings!\n");
+        ERR("Can only \"split\" strings!");
         sqfree(input);
         return SQVAL_NULL();
     }

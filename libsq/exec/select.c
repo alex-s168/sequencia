@@ -5,7 +5,7 @@
 
 OPERATION(select) {
     if (input.type != SQ_ARRAY) {
-        fprintf(stderr, "Can only perform select on array!\n");
+        ERR("Can only perform \"select\" on array!");
         sqfree(input);
         return SQVAL_NULL();
     }
@@ -16,7 +16,7 @@ OPERATION(select) {
         for (size_t i = 0; i < arg.arr.fixed.len; i ++) {
             const SQValue index = *sqarr_at(arg.arr, i);
             if (index.type != SQ_NUMBER) {
-                fprintf(stderr, "Can only perform select with array of indecies!\n");
+                ERR("Can only perform \"select\" with array of indecies!");
                 continue;
             }
             SQNum indexid = index.num;
@@ -45,7 +45,7 @@ OPERATION(select) {
         return val;
     }
 
-    fprintf(stderr, "Can only perform select with array of indecies or number (index)!\n");
+    ERR("Can only perform \"select\" with array of indecies or number (index)!");
     sqfree(input);
     return SQVAL_NULL();
 }

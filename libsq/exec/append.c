@@ -15,7 +15,7 @@ OPERATION(append) {
 
     if (input.type == SQ_STRING) {
         if (arg.type != SQ_STRING) {
-            fprintf(stderr, "Can only append string to string!\n");
+            ERR("Can only \"append\" string to string!");
             sqfree(input);
             return SQVAL_NULL();
         }
@@ -30,7 +30,7 @@ OPERATION(append) {
         return SQVAL_STR(new);
     }
 
-    fprintf(stderr, "Can only append to array or string!\n");
+    ERR("\"append\" only operates on arrays and strings!");
     sqfree(input);
     return SQVAL_NULL();
 }
@@ -44,7 +44,7 @@ OPERATION(prepend) {
 
     if (input.type == SQ_STRING) {
         if (arg.type != SQ_STRING) {
-            fprintf(stderr, "Can only prepend string to string!\n");
+            ERR("Can only \"prepend\" string to string!");
             sqfree(input);
             return SQVAL_NULL();
         }
@@ -59,7 +59,7 @@ OPERATION(prepend) {
         return SQVAL_STR(new);
     }
 
-    fprintf(stderr, "Can only prepend to array or string!\n");
+    ERR("\"prepend\" only operates on arrays and strings!");
     sqfree(input);
     return SQVAL_NULL();
 }

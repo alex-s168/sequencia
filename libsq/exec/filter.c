@@ -5,7 +5,7 @@
 
 OPERATION(filter) {
     if (input.type != SQ_ARRAY) {
-        fprintf(stderr, "Can only filter an array!\n");
+        ERR("Can only \"filter\" an array!");
         sqfree(input);
         return SQVAL_NULL();
     }
@@ -17,7 +17,7 @@ OPERATION(filter) {
         if (r.type == SQ_NULL)
             continue;
         if (r.type != SQ_NUMBER) {
-            fprintf(stderr, "Filter needs to return 0 for false and anything else for true!\n");
+            ERR("\"filter\" block needs to return 0 for false and any other number for true!");
             sqarr_free_rec(res);
             sqfree(input);
             return SQVAL_NULL();

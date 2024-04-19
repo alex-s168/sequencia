@@ -1,12 +1,11 @@
 #include <ctype.h>
 #include <stdbool.h>
-#include <stdio.h>
 
 #include "operations.h"
 
 OPERATION(tolower) {
     if (input.type != SQ_STRING) {
-        fprintf(stderr, "Can only convert string to lowercase!");
+        ERR("Can only convert string \"tolower\"!");
         sqfree(input);
         return SQVAL_NULL();
     }
@@ -22,7 +21,7 @@ OPERATION(tolower) {
 
 OPERATION(toupper) {
     if (input.type != SQ_STRING) {
-        fprintf(stderr, "Can only convert string to uppercase!");
+        ERR("Can only convert string \"toupper\"!");
         sqfree(input);
         return SQVAL_NULL();
     }
