@@ -12,8 +12,8 @@ OPERATION(filter) {
 
     SQArr res = sqarr_new(0);
 
-    for (size_t i = 0; i < input.arr.len; i ++) {
-        const SQValue r = sqexecs(sqdup(input.arr.items[i]), sqcommand_clone(children));
+    for (size_t i = 0; i < input.arr.fixed.len; i ++) {
+        const SQValue r = sqexecs(sqdup(*sqarr_at(input.arr, i)), sqcommand_clone(children));
         if (r.type == SQ_NULL)
             continue;
         if (r.type != SQ_NUMBER) {
@@ -23,7 +23,7 @@ OPERATION(filter) {
             return SQVAL_NULL();
         }
         if (r.num != 0) {
-            sqarr_add(&res, sqdup(input.arr.items[i]));
+            sqarr_add(&res, sqdup(*sqarr_at(input.arr, i)));
         }
     }
 

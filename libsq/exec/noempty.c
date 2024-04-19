@@ -1,11 +1,9 @@
 #include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
 
 #include "operations.h"
 
 OPERATION(noempty) {
-    if (input.type == SQ_ARRAY && input.arr.len == 0) {
+    if (input.type == SQ_ARRAY && input.arr.fixed.len == 0) {
         sqfree(input);
         return SQVAL_NULL();
     }

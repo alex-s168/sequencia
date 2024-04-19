@@ -1,4 +1,3 @@
-#include <ctype.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,8 +7,8 @@
 
 static void desh_rec(SQArr *dest, SQValue val) {
     if (val.type == SQ_ARRAY) {
-        for (size_t i = 0; i < val.arr.len; i ++) {
-            desh_rec(dest, sqdup(val.arr.items[i]));
+        for (size_t i = 0; i < val.arr.fixed.len; i ++) {
+            desh_rec(dest, sqdup(*sqarr_at(val.arr, i)));
         }
         return;
     }
@@ -33,16 +32,16 @@ OPERATION(flatten) {
 
     SQArr res = sqarr_new(0);
 
-    for (size_t i = 0; i < input.arr.len; i ++) {
-        const SQValue item = input.arr.items[i];
+    for (size_t i = 0; i < input.arr.fixed.len; i ++) {
+        const SQValue item = *sqarr_at(input.arr, i);
 
         if (item.type != SQ_ARRAY) {
             sqarr_add(&res, item);
             continue;
         }
 
-        for (size_t j = 0; j < item.arr.len; j ++)
-            sqarr_add(&res, item.arr.items[j]);
+        for (size_t j = 0; j < item.arr.fixed.len; j ++)
+            sqarr_add(&res, *sqarr_at(item.arr, j));
     }
 
     sqfree(input);

@@ -37,10 +37,10 @@ OPERATION(append) {
 
 OPERATION(prepend) {
     if (input.type == SQ_ARRAY) {
-        SQArr arr = sqarr_new(input.arr.len + 1);
-        arr.items[0] = sqdup(arg);
-        for (size_t i = 0; i < input.arr.len; i ++)
-            arr.items[i + 1] = input.arr.items[i];
+        SQArr arr = sqarr_new(input.arr.fixed.len + 1);
+        *sqarr_at(arr, 0) = sqdup(arg);
+        for (size_t i = 0; i < input.arr.fixed.len; i ++)
+            *sqarr_at(arr, i + 1) = *sqarr_at(input.arr, i);
         sqfree(input);
         return SQVAL_ARR(arr);
     }

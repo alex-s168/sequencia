@@ -4,8 +4,8 @@
 
 OPERATION(transform) {
     const SQArr res = sqarr_new(2);
-    res.items[0] = sqdup(input);
-    res.items[1] = sqexecs(sqdup(input), sqcommand_clone(children));
+    *sqarr_at(res, 0) = sqdup(input);
+    *sqarr_at(res, 1) = sqexecs(sqdup(input), sqcommand_clone(children));
     sqfree(input);
     return SQVAL_ARR(res);
 }

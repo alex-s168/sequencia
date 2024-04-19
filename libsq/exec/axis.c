@@ -1,6 +1,5 @@
 #include <stdbool.h>
 #include <stdio.h>
-#include <stdlib.h>
 
 #include "operations.h"
 
@@ -11,23 +10,23 @@ OPERATION(axis) {
         return SQVAL_NULL();
     }
 
-    if (input.arr.len == 0) {
+    if (input.arr.fixed.len == 0) {
         fprintf(stderr, "Input to axis needs to have at least one element!\n");
         sqfree(input);
         return SQVAL_NULL();
     }
 
-    const SQValue axis = input.arr.items[0];
+    const SQValue axis = *sqarr_at(input.arr, 0);
 
-    const SQArr res = sqarr_new(input.arr.len - 1);
-    for (size_t i = 1; i < input.arr.len; i ++) {
+    const SQArr res = sqarr_new(input.arr.fixed.len - 1);
+    for (size_t i = 1; i < input.arr.fixed.len; i ++) {
         const SQArr el = sqarr_new(2);
-        el.items[0] = sqdup(axis);
-        el.items[1] = input.arr.items[i];
-        res.items[i - 1] = SQVAL_ARR(el);
+        *sqarr_at(el, 0) = sqdup(axis);
+        *sqarr_at(el, 1) = *sqarr_at(input.arr, i);
+        *sqarr_at(res, i + 1) = SQVAL_ARR(el);
     }
 
     sqfree(axis);
-    free(input.arr.items);
+    sqarr_free_norec(input.arr);
     return SQVAL_ARR(res);
 }

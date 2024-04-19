@@ -1,6 +1,5 @@
 #include <stdbool.h>
 #include <stdio.h>
-#include <stdlib.h>
 
 #include "operations.h"
 
@@ -13,44 +12,44 @@ OPERATION(map) {
 
     if (arg.type == SQ_NULL) {
         size_t writer = 0;
-        for (size_t i = 0; i < input.arr.len; i ++) {
-            const SQValue val = sqexecs(input.arr.items[i], sqcommand_clone(children));
+        for (size_t i = 0; i < input.arr.fixed.len; i ++) {
+            const SQValue val = sqexecs(*sqarr_at(input.arr, i), sqcommand_clone(children));
             if (val.type == SQ_NULL)
                 continue;
-            input.arr.items[writer ++] = val;
+            *sqarr_at(input.arr, writer ++) = val;
         }
-        input.arr.len = writer;
+        input.arr.fixed.len = writer;
 
         return input;
     }
 
     if (arg.type == SQ_ARRAY) {
         size_t writer = 0;
-        for (size_t i = 0; i < arg.arr.len; i ++) {
-            if (arg.arr.items[i].type != SQ_NUMBER)
+        for (size_t i = 0; i < arg.arr.fixed.len; i ++) {
+            if (sqarr_at(arg.arr, i)->type != SQ_NUMBER)
                 continue;
 
-            SQNum index = arg.arr.items[i].num;
+            SQNum index = sqarr_at(arg.arr, i)->num;
             if (index < 0)
-                index = input.arr.len + index;
-            if (index >= input.arr.len)
+                index = input.arr.fixed.len + index;
+            if (index >= input.arr.fixed.len)
                 continue;
 
-            const SQValue val = sqexecs(input.arr.items[index], sqcommand_clone(children));
+            const SQValue val = sqexecs(*sqarr_at(input.arr, index), sqcommand_clone(children));
             if (val.type == SQ_NULL)
                 continue;
-            input.arr.items[writer ++] = val;
+            *sqarr_at(input.arr, writer ++) = val;
         }
-        input.arr.len = writer;
+        input.arr.fixed.len = writer;
         return input;
     }
 
     if (arg.type == SQ_NUMBER) {
         SQNum index = arg.num;
         if (index < 0)
-            index = input.arr.len + index;
-        if (index < input.arr.len)
-            input.arr.items[index] = sqexecs(input.arr.items[index], sqcommand_clone(children));
+            index = input.arr.fixed.len + index;
+        if (index < input.arr.fixed.len)
+            *sqarr_at(input.arr, index) = sqexecs(*sqarr_at(input.arr, index), sqcommand_clone(children));
         return input;
     }
 

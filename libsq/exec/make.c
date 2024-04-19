@@ -1,7 +1,5 @@
 #include <stdbool.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include "operations.h"
 
@@ -21,9 +19,9 @@ OPERATION(make) {
     const size_t len = arg.num;
 
     const SQArr arr = sqarr_new(len);
-    arr.items[0] = input;
+    *sqarr_at(arr, 0) = input;
     for (size_t i = 1; i < len; i ++)
-        arr.items[i] = sqdup(input);
+        *sqarr_at(arr, i) = sqdup(input);
 
     return SQVAL_ARR(arr);
 }

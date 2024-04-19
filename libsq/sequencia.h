@@ -48,6 +48,9 @@ void sqarr_add(SQArr *arr, SQValue val);
 void sqarr_reserve(SQArr *arr, size_t additional);
 void sqarr_free_rec(SQArr arr);
 void sqarr_free_norec(SQArr arr);
+static SQValue *sqarr_at(SQArr arr, size_t i) {
+    return (SQValue*)FixedList_get(arr.fixed, i);
+}
 
 SQCommand sqcommand_clone(SQCommand cmd);
 SQCommandIterState SQCommandIterState_new(SQCommand cmd);

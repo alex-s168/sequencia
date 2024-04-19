@@ -1,13 +1,12 @@
 #include <stdbool.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 #include "operations.h"
 
 OPERATION(len) {
     if (input.type == SQ_ARRAY) {
-        const size_t len = input.arr.len;
+        const size_t len = input.arr.fixed.len;
         sqfree(input);
         return SQVAL_NUM(len);
     }

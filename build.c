@@ -1,3 +1,4 @@
+#include <stdio.h>
 #ifndef CC
 # define CC        "clang"
 #endif
@@ -14,7 +15,22 @@
 
 enum CompileResult target_clean() {
     rmdir("build/");
+    rmdir("kollektions/build/");
     return CR_OK;
+}
+
+
+/* ========================================================================= */
+
+enum CompileResult target_deps() {
+    START;
+    ss("kollektions/", {
+        DO(ss_task("kollektions.a"));
+        DO(ss_task("kallok.a"));
+        DO(ss_task("kash.a"));
+        DO_IGNORE(ss_task("tests"));
+    });
+    END;
 }
 
 /* ========================================================================= */
@@ -25,7 +41,10 @@ struct CompileData target_sq_files[] = {
     DIR("build/sq/"),
     SP(CT_C, "sq/main.c"),
 
-    DEP("build/libsq.a")
+    DEP("build/libsq.a"),
+    DEP("kollektions/build/kollektions.a"),
+    DEP("kollektions/build/kallok.a"),
+    DEP("kollektions/build/kash.a"),
 };
 
 enum CompileResult target_sq() {
@@ -75,10 +94,6 @@ struct CompileData target_libsq_files[] = {
     SP(CT_C, "libsq/exec/use.c"),
     SP(CT_C, "libsq/exec/with.c"),
     SP(CT_C, "libsq/exec/strmod.c"),
-
-    DEP("kollektions/build/kollektions.a"),
-    DEP("kollektions/build/kallok.a"),
-    DEP("kollektions/build/kash.a"),
 };
 
 enum CompileResult target_libsq() {
@@ -91,10 +106,25 @@ enum CompileResult target_libsq() {
 
 /* ========================================================================= */
 
+enum CompileResult target_all() {
+    START;
+    printf("# dependencies\n");
+    DO(target_deps());
+    printf("# libsq.a\n");
+    DO(target_libsq());
+    printf("# sq.exe\n");
+    DO(target_sq());
+    END;
+}
+
+/* ========================================================================= */
+
 struct Target targets[] = {
-	{ .name = "libsq.a", .run = target_libsq },
-    { .name = "sq.exe",  .run = target_sq },
     { .name = "clean",   .run = target_clean },
+    { .name = "all",     .run = target_all },
+    { .name = "deps",    .run = target_deps },
+    { .name = "libsq.a", .run = target_libsq },
+    { .name = "sq.exe",  .run = target_sq },
 };
 
 #define TARGETS_LEN (sizeof(targets) / sizeof(targets[0]))

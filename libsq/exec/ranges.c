@@ -1,6 +1,5 @@
 #include <stdbool.h>
 #include <stdio.h>
-#include <stdlib.h>
 
 #include "operations.h"
 
@@ -11,7 +10,7 @@ OPERATION(ranges) {
         return SQVAL_NULL();
     }
 
-    if (arg.arr.len % 2 != 0) {
+    if (arg.arr.fixed.len % 2 != 0) {
         fprintf(stderr, "Arg to ranges needs to have an even amount of elements!\n");
         sqfree(input);
         return SQVAL_NULL();
@@ -25,9 +24,9 @@ OPERATION(ranges) {
 
     SQArr res = sqarr_new(0);
 
-    for (size_t i = 0; i < arg.arr.len; i += 2) {
-        const SQValue startVal = arg.arr.items[i];
-        const SQValue endVal = arg.arr.items[i + 1];
+    for (size_t i = 0; i < arg.arr.fixed.len; i += 2) {
+        const SQValue startVal = *sqarr_at(arg.arr, i);
+        const SQValue endVal = *sqarr_at(arg.arr, i + 1);
 
         if (startVal.type != SQ_NUMBER || endVal.type != SQ_NUMBER) {
             fprintf(stderr, "Arg to ranges needs to be an array of numbers!\n");
@@ -36,23 +35,23 @@ OPERATION(ranges) {
 
         SQNum start = startVal.num;
         if (start < 0)
-            start = input.arr.len + start;
-        if (start >= input.arr.len)
+            start = input.arr.fixed.len + start;
+        if (start >= input.arr.fixed.len)
             continue;
 
         SQNum end = endVal.num;
         if (end < 0)
-            end = input.arr.len + end;
-        if (end >= input.arr.len)
-            end = input.arr.len - 1;
+            end = input.arr.fixed.len + end;
+        if (end >= input.arr.fixed.len)
+            end = input.arr.fixed.len - 1;
 
         if (start > end) {
             for (long int j = start; j >= end; j --) {
-                sqarr_add(&res, sqdup(input.arr.items[j]));
+                sqarr_add(&res, sqdup(*sqarr_at(input.arr, j)));
             }
         } else {
             for (size_t j = start; j <= end; j ++) {
-                sqarr_add(&res, sqdup(input.arr.items[j]));
+                sqarr_add(&res, sqdup(*sqarr_at(input.arr, j)));
             }
         }
     }

@@ -81,7 +81,7 @@ char *sqstringify(SQValue val) {
         }
 
         case SQ_ARRAY: {
-            if (val.arr.len == 0)
+            if (val.arr.fixed.len == 0)
                 return NULL;
             fprintf(stderr, "Can't automatically join array!\n");
             return NULL;
@@ -119,15 +119,15 @@ void sqoutput(SQValue val, FILE *out, bool debug, bool ptrs, size_t indent) {
         case SQ_ARRAY: {
             if (debug) {
                 if (ptrs)
-                    fprintf(out, "0x%p=[\n", val.arr.items);
+                    fprintf(out, "0x%p=[\n", val.arr.fixed.data);
                 else
                     fprintf(out, "[\n");
-                for (size_t i = 0; i < val.arr.len; i ++) {
+                for (size_t i = 0; i < val.arr.fixed.len; i ++) {
                     if (i > 0)
                         fprintf(out, ",\n");
                     for (size_t j = 0; j < indent + 1; j ++)
                         fputs("  ", out);
-                    sqoutput(val.arr.items[i], out, true, ptrs, indent + 1);
+                    sqoutput(*sqarr_at(val.arr, i), out, true, ptrs, indent + 1);
                 }
                 fputc('\n', out);
                 for (size_t j = 0; j < indent; j ++)
@@ -159,9 +159,9 @@ SQValue sqdup(const SQValue val) {
             return SQVAL_STR(strdup(val.str));
 
         case SQ_ARRAY: {
-            const SQArr res = sqarr_new(val.arr.len);
-            for (size_t i = 0; i < val.arr.len; i ++)
-                res.items[i] = sqdup(val.arr.items[i]);
+            const SQArr res = sqarr_new(val.arr.fixed.len);
+            for (size_t i = 0; i < val.arr.fixed.len; i ++)
+                *sqarr_at(res, i) = sqdup(*sqarr_at(val.arr, i));
             return SQVAL_ARR(res);
         }
 
@@ -185,11 +185,11 @@ bool sqeq(const SQValue a, const SQValue b) {
             return strcmp(a.str, b.str) == 0;
 
         case SQ_ARRAY: {
-            if (a.arr.len != b.arr.len)
+            if (a.arr.fixed.len != b.arr.fixed.len)
                 return false;
             bool eq = true;
-            for (size_t i = 0; i < a.arr.len; i ++) {
-                if (!sqeq(a.arr.items[i], b.arr.items[i])) {
+            for (size_t i = 0; i < a.arr.fixed.len; i ++) {
+                if (!sqeq(*sqarr_at(a.arr, i), *sqarr_at(b.arr, i))) {
                     eq = false;
                     break;
                 }

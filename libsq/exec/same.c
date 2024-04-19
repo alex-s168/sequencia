@@ -1,6 +1,5 @@
 #include <stdbool.h>
 #include <stdio.h>
-#include <stdlib.h>
 
 #include "operations.h"
 
@@ -11,15 +10,15 @@ OPERATION(same) {
         return SQVAL_NULL();
     }
 
-    if (input.arr.len == 0) {
+    if (input.arr.fixed.len == 0) {
         sqfree(input);
         return SQVAL_NUM(1);
     }
 
-    SQValue v0 = input.arr.items[0];
+    SQValue v0 = *sqarr_at(input.arr, 0);
     bool eq = true;
-    for (size_t i = 1; i < input.arr.len; i ++) {
-        if (!sqeq(v0, input.arr.items[i])) {
+    for (size_t i = 1; i < input.arr.fixed.len; i ++) {
+        if (!sqeq(v0, *sqarr_at(input.arr, i))) {
             eq = false;
             break;
         }

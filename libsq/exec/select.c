@@ -1,7 +1,5 @@
-#include <ctype.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include <stdlib.h>
 
 #include "operations.h"
 
@@ -15,18 +13,18 @@ OPERATION(select) {
     if (arg.type == SQ_ARRAY) {
         SQArr res = sqarr_new(0);
 
-        for (size_t i = 0; i < arg.arr.len; i ++) {
-            const SQValue index = arg.arr.items[i];
+        for (size_t i = 0; i < arg.arr.fixed.len; i ++) {
+            const SQValue index = *sqarr_at(arg.arr, i);
             if (index.type != SQ_NUMBER) {
                 fprintf(stderr, "Can only perform select with array of indecies!\n");
                 continue;
             }
             SQNum indexid = index.num;
             if (indexid < 0)
-                indexid = input.arr.len + indexid;
-            if (indexid >= input.arr.len)
+                indexid = input.arr.fixed.len + indexid;
+            if (indexid >= input.arr.fixed.len)
                 continue;
-            sqarr_add(&res, sqdup(input.arr.items[indexid]));
+            sqarr_add(&res, sqdup(*sqarr_at(input.arr, indexid)));
         }
 
         sqfree(input);
@@ -36,12 +34,12 @@ OPERATION(select) {
     if (arg.type == SQ_NUMBER) {
         SQNum indexid = arg.num;
         if (indexid < 0)
-            indexid = input.arr.len + indexid;
+            indexid = input.arr.fixed.len + indexid;
         SQValue val;
-        if (indexid >= input.arr.len)
+        if (indexid >= input.arr.fixed.len)
             val = SQVAL_NULL();
         else
-            val = sqdup(input.arr.items[indexid]);
+            val = sqdup(*sqarr_at(input.arr, indexid));
 
         sqfree(input);
         return val;

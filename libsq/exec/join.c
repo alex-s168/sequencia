@@ -28,8 +28,8 @@ OPERATION(join) {
     size_t res_len = 0;
 
     bool is0 = true;
-    for (size_t i = 0; i < input.arr.len; i ++) {
-        SQValue val = input.arr.items[i];
+    for (size_t i = 0; i < input.arr.fixed.len; i ++) {
+        SQValue val = *sqarr_at(input.arr, i);
         if (val.type == SQ_NULL)
             continue;
 

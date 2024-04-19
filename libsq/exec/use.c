@@ -1,6 +1,5 @@
 #include <stdbool.h>
 #include <stdio.h>
-#include <stdlib.h>
 
 #include "operations.h"
 
@@ -14,31 +13,31 @@ OPERATION(use) {
     if (arg.type == SQ_ARRAY) {
         
         SQArr args = sqarr_new(0);
-        for (size_t i = 0; i < arg.arr.len; i++) {
-            if (arg.arr.items[i].type != SQ_NUMBER)
+        for (size_t i = 0; i < arg.arr.fixed.len; i++) {
+            if (sqarr_at(arg.arr, i)->type != SQ_NUMBER)
                 continue;
-            SQNum index = arg.arr.items[i].num;
+            SQNum index = sqarr_at(arg.arr, i)->num;
             if (index < 0)
-                index = input.arr.len + index;
-            if (index >= input.arr.len)
+                index = input.arr.fixed.len + index;
+            if (index >= input.arr.fixed.len)
                 continue;
-            sqarr_add(&args, sqdup(input.arr.items[i]));
+            sqarr_add(&args, sqdup(*sqarr_at(input.arr, i)));
         }
         const SQValue res2 = sqexecs(SQVAL_ARR(args), sqcommand_clone(children));
         SQArr res = sqarr_new(1);
-        res.items[0] = res2;
+        *sqarr_at(res, 0) = res2;
 
-        for (size_t i = 0; i < input.arr.len; i ++) {
+        for (size_t i = 0; i < input.arr.fixed.len; i ++) {
             bool found = false;
-            for (size_t j = 0; j < arg.arr.len; j ++) {
-                if (arg.arr.items[j].type == SQ_NUMBER && arg.arr.items[j].num == i) {
+            for (size_t j = 0; j < arg.arr.fixed.len; j ++) {
+                if (sqarr_at(arg.arr, j)->type == SQ_NUMBER && sqarr_at(arg.arr, j)->num == i) {
                     found = true;
                     break;
                 }
             }
             if (found)
                 continue;
-            sqarr_add(&res, sqdup(input.arr.items[i]));
+            sqarr_add(&res, sqdup(*sqarr_at(input.arr, i)));
         }
 
         sqfree(input);
@@ -49,22 +48,22 @@ OPERATION(use) {
     if (arg.type == SQ_NUMBER) {
         SQNum index = arg.num;
         if (index < 0)
-            index = input.arr.len + index;
-        if (index >= input.arr.len) {
+            index = input.arr.fixed.len + index;
+        if (index >= input.arr.fixed.len) {
             sqfree(input);
             return SQVAL_NULL();
         }
 
-        const SQValue res2 = sqexecs(sqdup(input.arr.items[index]), sqcommand_clone(children));
+        const SQValue res2 = sqexecs(sqdup(*sqarr_at(input.arr, index)), sqcommand_clone(children));
 
-        SQArr res = sqarr_new(input.arr.len);
-        res.items[0] = res2;
+        SQArr res = sqarr_new(input.arr.fixed.len);
+        *sqarr_at(res, 0) = res2;
 
-        for (size_t i = 0; i < input.arr.len; i ++) {
+        for (size_t i = 0; i < input.arr.fixed.len; i ++) {
             if (i == index)
                 continue;
 
-            sqarr_add(&res, sqdup(input.arr.items[index]));
+            sqarr_add(&res, sqdup(*sqarr_at(input.arr, index)));
         }
 
         sqfree(input);

@@ -18,7 +18,7 @@ void sqarr_reserve(SQArr *arr, size_t additional) {
 
 void sqarr_free_rec(SQArr arr) {
     for (size_t i = 0; i < arr.fixed.len; i ++) {
-        SQValue elem = *(SQValue*)FixedList_get(arr.fixed, i);
+        SQValue elem = *sqarr_at(arr, i);
         if (elem.type == SQ_ARRAY)
             sqarr_free_rec(elem.arr);
     }

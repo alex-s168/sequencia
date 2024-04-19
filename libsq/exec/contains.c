@@ -18,9 +18,9 @@ OPERATION(contains) {
         }
 
         bool found = true;
-        for (size_t i = 0; i < input.arr.len; i ++) {
-            for (size_t j = 0; j < arg.arr.len; j ++) {
-                if (!sqeq(input.arr.items[i], arg.arr.items[i])) {
+        for (size_t i = 0; i < input.arr.fixed.len; i ++) {
+            for (size_t j = 0; j < arg.arr.fixed.len; j ++) {
+                if (!sqeq(*sqarr_at(input.arr, i), *sqarr_at(arg.arr, i))) {
                     found = false;
                     break;
                 }
