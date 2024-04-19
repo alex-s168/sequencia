@@ -79,6 +79,7 @@ SQValue sqexec_single(SQValue input, const char *command, SQCommand children, SQ
 
 extern bool gDebug;
 extern void (*gErrCallback)(const char *msg);
+extern void (*gDebugInstCallback)(SQValue input, const char *command, SQCommand children, SQValue arg);
 
 #define ERR(msg) gErrCallback(msg)
 

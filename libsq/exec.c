@@ -4,57 +4,15 @@
 
 #include "sequencia.h"
 
-#include "exec/operations.h"
+#define FILELIB_IMPL
 #include "../minilibs/filelib.h"
+
+#include "exec/operations.h"
 #undef OPERATION
 
 SQValue sqexec_single(SQValue input, const char *command, SQCommand children, SQValue arg) {
-    if (gDebug) {
-        while (true) {
-            printf("> ");
-            char *op = readLine(stdin);
-
-            if (op[0] == '\0')
-                continue;
-
-            if (strcmp(op, "step") == 0) {
-                free(op);
-                break;
-            }
-            else if (strcmp(op, "exit") == 0) {
-                exit(0);
-            }
-            else if (strcmp(op, "val") == 0) {
-                sqoutput(input, stdout, true, false, 0);
-                fputc('\n', stdout);
-            }
-            else if (strcmp(op, "op") == 0) {
-                puts(command);
-                size_t ch = children.lines_len;
-                if (ch > 3)
-                    ch = 3;
-                for (size_t i = 0; i < ch; i ++) {
-                    printf("  %s\n", children.lines[i]);
-                }
-                if (children.lines_len > 3)
-                    puts("  ...");
-            }
-            else if (strcmp(op, "finish") == 0) {
-                gDebug = false;
-                break;
-            }
-            else {
-                puts("Available commands:");
-                puts("  step");
-                puts("  exit");
-                puts("  val");
-                puts("  op");
-                puts("  finish");
-            }
-
-            free(op);
-        }
-    }
+    if (gDebug)
+        gDebugInstCallback(input, command, children, arg);
 
 #define OPERATION(name) if (strcmp(command, #name) == 0) \
     return sqop_##name(input, children, arg);
