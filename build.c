@@ -40,6 +40,7 @@ struct CompileData target_sq_files[] = {
 
     DIR("build/sq/"),
     SP(CT_C, "sq/main.c"),
+    SP(CT_C, "sq/debugger.c"),
 
     DEP("build/libsq.a"),
     DEP("kollektions/build/kollektions.a"),
