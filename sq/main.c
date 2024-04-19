@@ -29,16 +29,17 @@ bool gDebug;
 
 int main(const int argc, char **argv) {
     if (flagExist(getFlag(argc, argv, "--help")) ||
-        flagExist(getFlag(argc, argv, "-h"))) {
+        flagExist(getFlag(argc, argv, "-h")) || argc == 1) {
         printf("\"%s\" - Sequencia utility interpreter\n", argv[0]);
         printf("  -S  --file [path]     REQUIRED: The path to a sequence script source file\n");
         printf("  -s  --script [script] ^ ALTERNATIVE: The script to evaluate\n");
         printf("  -I  --input [path]    The input file for data; default: \"-\"\n");
         printf("  -d  --debug-output    Enable debug output (ignored with interactive debugger)\n");
         printf("  -g  --debugger        Start interactive debugger; Requires \"-I\"!\n");
+        printf("  -h  --help            Show this help message\n");
         fputc('\n', stdout);
         return 0;
-        }
+    }
 
     SQCommand cmd;
 
