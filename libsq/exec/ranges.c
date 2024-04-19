@@ -46,10 +46,12 @@ OPERATION(ranges) {
             end = input.arr.fixed.len - 1;
 
         if (start > end) {
+            DynamicList_reserve(&res, start - end);
             for (long int j = start; j >= end; j --) {
                 sqarr_add(&res, sqdup(*sqarr_at(input.arr, j)));
             }
         } else {
+            DynamicList_reserve(&res, end - start);
             for (size_t j = start; j <= end; j ++) {
                 sqarr_add(&res, sqdup(*sqarr_at(input.arr, j)));
             }

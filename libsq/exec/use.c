@@ -10,8 +10,7 @@ OPERATION(use) {
         return SQVAL_NULL();
     }
     
-    if (arg.type == SQ_ARRAY) {
-        
+    if (arg.type == SQ_ARRAY) {        
         SQArr args = sqarr_new(0);
         for (size_t i = 0; i < arg.arr.fixed.len; i++) {
             if (sqarr_at(arg.arr, i)->type != SQ_NUMBER)

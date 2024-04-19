@@ -17,16 +17,15 @@ OPERATION(axis) {
     }
 
     const SQValue axis = *sqarr_at(input.arr, 0);
+    DynamicList_removeAt(&input.arr, 0);
 
-    const SQArr res = sqarr_new(input.arr.fixed.len - 1);
-    for (size_t i = 1; i < input.arr.fixed.len; i ++) {
+    for (size_t i = 0; i < input.arr.fixed.len; i ++) {
         const SQArr el = sqarr_new(2);
         *sqarr_at(el, 0) = sqdup(axis);
         *sqarr_at(el, 1) = *sqarr_at(input.arr, i);
-        *sqarr_at(res, i + 1) = SQVAL_ARR(el);
+        *sqarr_at(input.arr, i) = SQVAL_ARR(el);
     }
 
     sqfree(axis);
-    sqarr_free_norec(input.arr);
-    return SQVAL_ARR(res);
+    return input;
 }
