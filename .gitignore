@@ -1,0 +1,7 @@
+.idea/
+build/
+kollektions/build/
+.sequencia.temp.*
+build.exe
+kollektions/build.exe
+test.sq

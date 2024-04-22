@@ -9,6 +9,8 @@
 # define CXX_ARGS  "-O2"
 #endif
 
+#define VERBOSE 1
+
 #include "build_c/build.h"
 
 /* ========================================================================= */
