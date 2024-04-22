@@ -1,7 +1,10 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "sq.h"
 #include "../libsq/sequencia.h"
+
+#include "../packedcdoc/rt/rt.h"
 
 #define CLI_IMPL
 #include "../minilibs/cli.h"
@@ -34,7 +37,31 @@ int main(const int argc, char **argv) {
         printf("  -d  --debug-output    Enable debug output (ignored with interactive debugger)\n");
         printf("  -g  --debugger        Start interactive debugger; Requires \"-I\"!\n");
         printf("  -h  --help            Show this help message\n");
+        printf("      --doc [topic]     Print out the documentation for the given topic\n");
+        printf("      --doc-ls          List all the documentation topics available\n");
         fputc('\n', stdout);
+        return 0;
+    }
+
+    if (flagExist(getFlag(argc, argv, "--doc-ls"))) {
+        DocEntries entries = getDocEntries();
+        for (size_t i = 0; i < entries.len; i ++)
+            printf("\"%s\"\n", entries.items[i].name);
+        return 0;
+    }
+
+    Flag docFlag = getFlag(argc, argv, "--doc");
+    if (flagExist(docFlag)) {
+        if (docFlag.len != 2) {
+            fprintf(stderr, "\"%s\" --doc [name]\n", argv[0]);
+            return 1;
+        }
+        DocEntry *entry = findDocEntry(docFlag.str[1]);
+        if (entry == NULL) {
+            fprintf(stderr, "Topic not found!\n");
+            return 1;
+        }
+        puts(md_render(entry->text, 80));
         return 0;
     }
 
