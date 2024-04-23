@@ -39,7 +39,7 @@ To get started, make sure that you have:
 - a functional C compiler
 - `ar' tool
 
-Run the `build.sh` script with optionally the `CC` and `CFLAGS` variables set (defaults to `tcc` and `-O2`) and optionally a task as argument (defaults to `all`).
+Run the `build.sh` script with optionally the `CC`, `CFLAGS` and `LDFLAGS` variables set (defaults to `tcc` and `-O2`) and optionally a task as argument (defaults to `all`).
 The `build.sh` script automatically compiles the `build.c` script with the correct flags and then invokes it.
 
 Tasks:
@@ -52,6 +52,14 @@ Tasks:
 - `doc/glamour` (requires go)
 
 The outputs will be in `build/`.
+
+### Manually
+Manually invoking each task gives you more control of your build process, like allowing for the use of glamour or using different compiler arguments for different tasks.
+Steps that `all` does:
+- `deps`
+- `doc/text` (alternatively `doc/glamour`)
+- `libsq.a`
+- `sq.exe`
 
 ### Windows
 I recommend installing git bash and tcc and then you can run all the linux steps in git bash without any problems.
