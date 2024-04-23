@@ -52,7 +52,7 @@ enum CompileResult target_doc_text() {
 enum CompileResult target_doc_glamour() {
     START;
     DO(shell("CC=" CC " ./build_doc.sh"));
-    ss("packedcdoc", {
+    ss("packedcdoc/", {
         DO(ss_task("rt/glamour"));
     });
     END;
