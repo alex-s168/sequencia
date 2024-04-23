@@ -36,7 +36,7 @@ echo "void* doc_lut[][3] = {" >> build/doc_lut.c
 for sym in $symbols; do
     name="${sym/_md/}"
     name="${name//_/ }"
-    echo "  (void*[3]) { \"$name\", &$sym, &${sym}_len }," >> build/doc_lut.c
+    echo "  { \"$name\", &$sym, &${sym}_len }," >> build/doc_lut.c
 done
-echo "  (void*[3]) { (void*)0, (void*)0, (void*)0 }" >> build/doc_lut.c
+echo "  { (void*)0, (void*)0, (void*)0 }" >> build/doc_lut.c
 echo "};" >> build/doc_lut.c

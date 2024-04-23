@@ -21,7 +21,6 @@ DocEntries getDocEntries() {
 
     for (size_t i = 0; i < count; i ++) {
         entries.items[i].name = (const char *) (doc_lut[i][0]);
-        printf("%u\n", *(unsigned int *) doc_lut[i][2]);
         size_t txt_len = *(unsigned int *) doc_lut[i][2]; 
         char *new = malloc(txt_len + 1);
         memcpy(new, doc_lut[i][1], txt_len);
