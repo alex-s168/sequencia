@@ -32,6 +32,29 @@ enum CompileResult target_deps() {
         DO(ss_task("kash.a"));
         DO_IGNORE(ss_task("tests"));
     });
+    ss("u-xxd/", { // needed for doc
+        DO(ss_task("uxxd.exe"));
+    });
+    END;
+}
+
+/* ========================================================================= */
+
+enum CompileResult target_doc_text() {
+    START;
+    DO(shell("CC=" CC " ./build_doc.sh"));
+    ss("packedcdoc/", {
+        DO(ss_task("rt/text"));
+    });
+    END;
+}
+
+enum CompileResult target_doc_glamour() {
+    START;
+    DO(shell("CC=" CC " ./build_doc.sh"));
+    ss("packedcdoc", {
+        DO(ss_task("rt/glamour"));
+    });
     END;
 }
 
@@ -43,8 +66,16 @@ struct CompileData target_sq_files[] = {
     DIR("build/sq/"),
     SP(CT_C, "sq/main.c"),
     SP(CT_C, "sq/debugger.c"),
+    SP(CT_C, "sq/doc.c"),
+
+    DIR("build/build/"),
+    SP(CT_C, "build/doc_lut.c"),
+
+    DEP("build/doc.a"),
+    DEP("packedcdoc/rt/rt.a"),
 
     DEP("build/libsq.a"),
+
     DEP("kollektions/build/kollektions.a"),
     DEP("kollektions/build/kallok.a"),
     DEP("kollektions/build/kash.a"),
@@ -113,6 +144,8 @@ enum CompileResult target_all() {
     START;
     printf("# dependencies\n");
     DO(target_deps());
+    printf("# documentation (text)\n");
+    DO(target_doc_text());
     printf("# libsq.a\n");
     DO(target_libsq());
     printf("# sq.exe\n");
@@ -123,11 +156,13 @@ enum CompileResult target_all() {
 /* ========================================================================= */
 
 struct Target targets[] = {
-    { .name = "clean",   .run = target_clean },
-    { .name = "all",     .run = target_all },
-    { .name = "deps",    .run = target_deps },
-    { .name = "libsq.a", .run = target_libsq },
-    { .name = "sq.exe",  .run = target_sq },
+    { .name = "clean",          .run = target_clean },
+    { .name = "all",            .run = target_all },
+    { .name = "deps",           .run = target_deps },
+    { .name = "doc/glamour",    .run = target_doc_glamour },
+    { .name = "doc/text",       .run = target_doc_text },
+    { .name = "libsq.a",        .run = target_libsq },
+    { .name = "sq.exe",         .run = target_sq },
 };
 
 #define TARGETS_LEN (sizeof(targets) / sizeof(targets[0]))

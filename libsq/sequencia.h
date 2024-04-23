@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-#include "../kollektions/lists.h"
+#include "../kollektions/lists/lists.h"
 
 typedef enum {
     SQ_NULL = 0,

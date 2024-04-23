@@ -7,3 +7,9 @@
 [submodule "build_c"]
 	path = build_c
 	url = https://github.com/alex-s168/build.c.git
+[submodule "u-xxd"]
+	path = u-xxd
+	url = https://github.com/alex-s168/u-xxd.git
+[submodule "packedcdoc"]
+	path = packedcdoc
+	url = https://github.com/alex-s168/packedcdoc.git

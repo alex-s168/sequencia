@@ -23,11 +23,10 @@ map
 join nl'
 ```
 
-For more advanced examples, take a look at [Basics](doc/how2basics.md).
+For more advanced examples, take a look at the documentation.
 
 ## Documentation
-- [Basics](doc/how2basics.md)
-- [Operations](doc/operations.md)
+- [Table of contents](doc/toc.md)
 
 ## Compiling
 First download the repository via `git clone --recurse-submodules https://github.com/alex-s168/sequencia.git`.
@@ -49,6 +48,8 @@ Tasks:
 - `deps`
 - `libsq.a`
 - `sq.exe`
+- `doc/text`
+- `doc/glamour` (requires go)
 
 The outputs will be in `build/`.
 
