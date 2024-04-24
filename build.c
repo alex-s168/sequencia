@@ -131,6 +131,11 @@ struct CompileData target_libsq_files[] = {
 };
 
 enum CompileResult target_libsq() {
+    ONLY_IF({
+        NOT_FILE("build/libsq.a");
+        CHANGED("libsq/");
+    });
+
     START;
     DO(verifyDependencies(LI(target_libsq_files)));
     DO(compile(LI(target_libsq_files)));
@@ -140,24 +145,8 @@ enum CompileResult target_libsq() {
 
 /* ========================================================================= */
 
-enum CompileResult target_all() {
-    START;
-    printf("# dependencies\n");
-    DO(target_deps());
-    printf("# documentation (text)\n");
-    DO(target_doc_text());
-    printf("# libsq.a\n");
-    DO(target_libsq());
-    printf("# sq.exe\n");
-    DO(target_sq());
-    END;
-}
-
-/* ========================================================================= */
-
 struct Target targets[] = {
     { .name = "clean",          .run = target_clean },
-    { .name = "all",            .run = target_all },
     { .name = "deps",           .run = target_deps },
     { .name = "doc/glamour",    .run = target_doc_glamour },
     { .name = "doc/text",       .run = target_doc_text },

@@ -2,7 +2,6 @@ set -e
 
 : "${CC:=tcc}"
 : "${CFLAGS:=-O2}"
-task=${1:-"all"}
 
 if [ "$USE_NOTCURSES" = "1" ]; then
     CFLAGS="$CFLAGS -DUSE_NOTCURSES"
@@ -10,4 +9,24 @@ if [ "$USE_NOTCURSES" = "1" ]; then
 fi
 
 $CC $CFLAGS -DCC=\""$CC"\" -DCC_ARGS=\""$CFLAGS"\" -DLD_ARGS=\""$LDFLAGS"\" build.c -o build.exe
-./build.exe $task
+
+if [ -z "$1" ]; then
+    echo "# deps"
+    ./build.exe "deps"
+
+    if [ "$USE_GLAMOUR" = "1" ]; then
+        echo "# doc/glamour"
+        ./build.exe "doc/glamour"
+    else
+        echo "# doc/text"
+        ./build.exe "doc/text"
+    fi
+
+    echo "# libsq.a"
+    ./build.exe "libsq.a"
+
+    echo "# sq.exe"
+    ./build.exe "sq.exe"
+else
+    ./build.exe "$1"
+fi

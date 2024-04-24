@@ -2,15 +2,14 @@
 Programming language for simple and easy data processing.
 
 ```
-sequencia - Sequencia utility interpreter
-  -S  --file [path]     REQUIRED: The path to a sequence script source file
-  -s  --script [scrisequencia - Sequencia utility interpreter
+sq - Sequencia utility interpreter
   -S  --file [path]     REQUIRED: The path to a sequence script source file
   -s  --script [script] ^ ALTERNATIVE: The script to evaluate
   -I  --input [path]    The input file for data; default: "-"
-  -d  --debug           Enable script developer debug outputpt] ^ ALTERNATIVE: The script to evaluate
-  -I  --input [path]    The input file for data; default: "-"
-  -d  --debug           Enable script developer debug output
+  -d  --debug-output    Enable debug output (ignored with interactive debugger)
+  -g  --debugger        Start interactive debugger; Requires "-I"!
+  -h  --help            Show this help message
+      --doc (topic)     Print out the documentation for the given topic OR list all topics available
 ```
 
 ## Example
@@ -37,29 +36,21 @@ The project uses [Build.C](https://github.com/alex-s168/build.c) as "build syste
 
 To get started, make sure that you have:
 - a functional C compiler
-- `ar' tool
+- `ar` tool
 
-Run the `build.sh` script with optionally the `CC`, `CFLAGS` and `LDFLAGS` variables set (defaults to `tcc` and `-O2`) and optionally a task as argument (defaults to `all`).
-The `build.sh` script automatically compiles the `build.c` script with the correct flags and then invokes it.
+Run the `build.sh` script with the following variables set:
+- `CC` - C compiler - defaults to `tcc`
+- `CFLAGS` - C compiler arguments - defaults to `-O2`
+- `LDFLAGS` - C compiler arguments for linking - defaults to ``
+- `USE_GLAMOUR` - 0 (false) or 1 (true) - defaults to `0` - requires go to be installed - Embedd glamour for rendering markdown for built-in doc
+- `USE_NOTCURSES` - 0 (false) or 1 (true) - defaults to `0` - requires notcurses to be installed - Use notcurses to show a better list of doc topics
 
-Tasks:
-- `clean`
-- `all` (default)
-- `deps`
-- `libsq.a`
-- `sq.exe`
-- `doc/text`
-- `doc/glamour` (requires go)
+Example:
+`CC=clang USE_GLAMOUR=1 ./build.sh`
+
+Always run `./build.sh clean` after you change compiler or compiler arguments!
 
 The outputs will be in `build/`.
-
-### Manually
-Manually invoking each task gives you more control of your build process, like allowing for the use of glamour or using different compiler arguments for different tasks.
-Steps that `all` does:
-- `deps`
-- `doc/text` (alternatively `doc/glamour`)
-- `libsq.a`
-- `sq.exe`
 
 ### Windows
 I recommend installing git bash and tcc and then you can run all the linux steps in git bash without any problems.
