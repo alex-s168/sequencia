@@ -1,48 +1,16 @@
 package main
 
 import (
-	"context"
 	"errors"
-	"flag"
-	"fmt"
-	"log"
-	"os"
 	"strings"
 
-	"github.com/TobiasYin/go-lsp/logs"
-	"github.com/TobiasYin/go-lsp/lsp"
-	"github.com/TobiasYin/go-lsp/lsp/defines"
+	"github.com/tliron/commonlog"
+	"github.com/tliron/glsp"
+	protocol "github.com/tliron/glsp/protocol_3_16"
+	"github.com/tliron/glsp/server"
+
+	_ "github.com/tliron/commonlog/simple"
 )
-
-func strPtr(str string) *string {
-	return &str
-}
-
-var logPath *string
-
-func init() {
-	var logger *log.Logger
-	defer func() {
-		logs.Init(logger)
-	}()
-	logPath = flag.String("logs", "", "logs file path")
-	if logPath == nil || *logPath == "" {
-		logger = log.New(os.Stderr, "", 0)
-		return
-	}
-	p := *logPath
-	f, err := os.Open(p)
-	if err == nil {
-		logger = log.New(f, "", 0)
-		return
-	}
-	f, err = os.Create(p)
-	if err == nil {
-		logger = log.New(f, "", 0)
-		return
-	}
-	panic(fmt.Sprintf("logs init error: %v", *logPath))
-}
 
 var operations = map[string]string{
     "any":      "any",
@@ -87,76 +55,62 @@ var operations = map[string]string{
     "with":     "with",
 }
 
+var (
+	handler protocol.Handler
+)
+
+var documents = map[protocol.DocumentUri][]string{}
+
 //export runLsp
 func runLsp() {
-	server := lsp.NewServer(&lsp.Options{})
-    documents := map[defines.DocumentUri][]string{}
+	commonlog.Configure(1, nil)
 
-	server.OnHover(func(ctx context.Context, req *defines.HoverParams) (result *defines.Hover, err error) {
-        word := GetWord(documents[req.TextDocument.Uri], req.Position)
-        if word == "" {
-            return nil, nil
-        }
+	handler = protocol.Handler{
+		Initialize:  initialize,
+		Initialized: initialized,
+		Shutdown:    shutdown,
+		SetTrace:    setTrace,
 
-        //op, ok := operations[word]
-        //if !ok {
-        //    return nil, nil
-        //}
-
-		return &defines.Hover{Contents: defines.MarkupContent{Kind: defines.MarkupKindMarkdown, Value: word}}, nil
-	})
-
-	server.OnCompletion(func(ctx context.Context, req *defines.CompletionParams) (result *[]defines.CompletionItem, err error) {
-		d := defines.CompletionItemKindFunction
-        items := make([]defines.CompletionItem, len(operations))
-        i := 0
-        for op, doc := range operations { 
-            items[i] = defines.CompletionItem{
-                Label:          op,
-                Kind:           &d,
-                InsertText:     strPtr(op),
-                Documentation:  doc,
+        TextDocumentDidOpen: func(ctx *glsp.Context, req *protocol.DidOpenTextDocumentParams) (err error) {
+            documents[req.TextDocument.URI] = strings.Split(req.TextDocument.Text, "\n")
+            return nil
+        },
+        TextDocumentDidClose: func(ctx *glsp.Context, req *protocol.DidCloseTextDocumentParams) (err error) {
+            delete(documents, req.TextDocument.URI)
+            return nil
+        },
+        TextDocumentDidChange: func(ctx *glsp.Context, req *protocol.DidChangeTextDocumentParams) (err error) {
+            doc, ok := documents[req.TextDocument.URI]
+            if !ok {
+                return errors.New("Document never opened!")
             }
-            i += 1
-        }
-		return &items, nil
-	})
+            documents[req.TextDocument.URI] = ApplyChanges(doc, req.ContentChanges)
+            return nil
+        },
 
-    server.OnDidOpenTextDocument(func(ctx context.Context, req *defines.DidOpenTextDocumentParams) (err error) {
-        documents[req.TextDocument.Uri] = strings.Split(req.TextDocument.Text, "\n")
-        return nil
-    })
+        TextDocumentHover: hover,
+        TextDocumentCompletion: func(ctx *glsp.Context, req *protocol.CompletionParams) (result any, err error) {
+    		d := protocol.CompletionItemKindFunction
+            items := make([]protocol.CompletionItem, len(operations))
+            i := 0
+            for op, doc := range operations { 
+                items[i] = protocol.CompletionItem{
+                    Label:          op,
+                    Kind:           &d,
+                    InsertText:     &op,
+                    Documentation:  doc,
+                }
+                i += 1
+            }
+		    return &items, nil
+	    },
+	}
 
-    server.OnDidCloseTextDocument(func(ctx context.Context, req *defines.DidCloseTextDocumentParams) (err error) {
-        delete(documents, req.TextDocument.Uri)
-        return nil
-    })
+	server := server.NewServer(&handler, "sequencia", false)
 
-    server.OnDidChangeTextDocument(func(ctx context.Context, req *defines.DidChangeTextDocumentParams) (err error) {
-        doc, ok := documents[req.TextDocument.Uri]
-        if !ok {
-            return errors.New("Document never opened!")
-        }
-        documents[req.TextDocument.Uri] = ApplyChanges(doc, req.ContentChanges)
-        return nil
-    })
+	server.RunStdio()
 
-	server.OnDidChangeWatchedFiles(func(ctx context.Context, req *defines.DidChangeWatchedFilesParams) (err error) {
-		return nil
-	})
-
-    server.OnInitialized(func(ctx context.Context, req *defines.InitializeParams) (err error) {
-		return nil
-	})
-
-	server.OnDidChangeConfiguration(func(ctx context.Context, req *defines.DidChangeConfigurationParams) (err error) {
-		return nil
-	})
-    
-    server.OnDidSaveTextDocument(func(ctx context.Context, req *defines.DidSaveTextDocumentParams) (err error) {
-        return nil
-    })
-
+/*
 	server.OnInitialize(func(ctx context.Context, req *defines.InitializeParams) (result *defines.InitializeResult, err *defines.InitializeError) {
 		s := &defines.InitializeResult{}
 		s.Capabilities.HoverProvider = true
@@ -172,11 +126,51 @@ func runLsp() {
         }
 		return s, nil
 	})    
-
-	server.Run()
+*/
 }
 
-func GetWord(file []string, pos defines.Position) string {
+func initialize(context *glsp.Context, params *protocol.InitializeParams) (any, error) {
+	capabilities := handler.CreateServerCapabilities()
+    capabilities.TextDocumentSync = protocol.TextDocumentSyncKindFull
+    version := "0.0.1"
+	return protocol.InitializeResult{
+		Capabilities: capabilities,
+		ServerInfo: &protocol.InitializeResultServerInfo{
+			Name:    "sequencia",
+			Version: &version,
+		},
+	}, nil
+}
+
+func initialized(context *glsp.Context, params *protocol.InitializedParams) error {
+	return nil
+}
+
+func shutdown(context *glsp.Context) error {
+	protocol.SetTraceValue(protocol.TraceValueOff)
+	return nil
+}
+
+func setTrace(context *glsp.Context, params *protocol.SetTraceParams) error {
+	protocol.SetTraceValue(params.Value)
+	return nil
+}
+
+func hover(context *glsp.Context, params *protocol.HoverParams) (*protocol.Hover, error) {
+    word := GetWord(documents[params.TextDocument.URI], params.Position)
+    if word == "" {
+        return nil, nil
+    }
+
+    //op, ok := operations[word]
+    //if !ok {
+    //    return nil, nil
+    //}
+
+	return &protocol.Hover{Contents: protocol.MarkupContent{Kind: protocol.MarkupKindMarkdown, Value: word}}, nil
+}
+
+func GetWord(file []string, pos protocol.Position) string {
     if int(pos.Line) >= len(file) {
         return ""
     }
@@ -200,9 +194,10 @@ func GetWord(file []string, pos defines.Position) string {
     return line[start:end]
 }
 
-func ApplyChanges(file []string, changes []defines.TextDocumentContentChangeEvent) []string {
-    for _, change := range changes {
-        file = strings.Split(change.Text.(string), "\n")
+func ApplyChanges(file []string, changes []any) []string {
+    for _, changen := range changes {
+        change := changen.(protocol.TextDocumentContentChangeEventWhole)
+        file = strings.Split(change.Text, "\n")
     }
 
     return file
