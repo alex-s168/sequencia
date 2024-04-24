@@ -2,10 +2,10 @@ package main
 
 import (
 	"context"
+	"errors"
 	"flag"
 	"fmt"
 	"log"
-	"net/url"
 	"os"
 	"strings"
 
@@ -90,24 +90,20 @@ var operations = map[string]string{
 //export runLsp
 func runLsp() {
 	server := lsp.NewServer(&lsp.Options{})
+    documents := map[defines.DocumentUri][]string{}
 
 	server.OnHover(func(ctx context.Context, req *defines.HoverParams) (result *defines.Hover, err error) {
-		file, err := ReadFile(req.TextDocument.Uri)
-		if err != nil {
-			logs.Println("hover: failed to read req.TextDocument.Uri" + err.Error())
-		}
-
-        word := GetWord(file, req.Position)
+        word := GetWord(documents[req.TextDocument.Uri], req.Position)
         if word == "" {
             return nil, nil
         }
 
-        op, ok := operations[word]
-        if !ok {
-            return nil, nil
-        }
+        //op, ok := operations[word]
+        //if !ok {
+        //    return nil, nil
+        //}
 
-		return &defines.Hover{Contents: defines.MarkupContent{Kind: defines.MarkupKindMarkdown, Value: op}}, nil
+		return &defines.Hover{Contents: defines.MarkupContent{Kind: defines.MarkupKindMarkdown, Value: word}}, nil
 	})
 
 	server.OnCompletion(func(ctx context.Context, req *defines.CompletionParams) (result *[]defines.CompletionItem, err error) {
@@ -125,6 +121,25 @@ func runLsp() {
         }
 		return &items, nil
 	})
+
+    server.OnDidOpenTextDocument(func(ctx context.Context, req *defines.DidOpenTextDocumentParams) (err error) {
+        documents[req.TextDocument.Uri] = strings.Split(req.TextDocument.Text, "\n")
+        return nil
+    })
+
+    server.OnDidCloseTextDocument(func(ctx context.Context, req *defines.DidCloseTextDocumentParams) (err error) {
+        delete(documents, req.TextDocument.Uri)
+        return nil
+    })
+
+    server.OnDidChangeTextDocument(func(ctx context.Context, req *defines.DidChangeTextDocumentParams) (err error) {
+        doc, ok := documents[req.TextDocument.Uri]
+        if !ok {
+            return errors.New("Document never opened!")
+        }
+        documents[req.TextDocument.Uri] = ApplyChanges(doc, req.ContentChanges)
+        return nil
+    })
 
 	server.OnDidChangeWatchedFiles(func(ctx context.Context, req *defines.DidChangeWatchedFilesParams) (err error) {
 		return nil
@@ -149,6 +164,12 @@ func runLsp() {
 		s.Capabilities.DocumentFormattingProvider = true
         s.Capabilities.HoverProvider = true
         s.Capabilities.CompletionProvider = &defines.CompletionOptions{}
+        tr := true
+        syk := defines.TextDocumentSyncKindFull;
+        s.Capabilities.TextDocumentSync = &defines.TextDocumentSyncOptions{
+            OpenClose: &tr,
+            Change: &syk, 
+        }
 		return s, nil
 	})    
 
@@ -163,26 +184,28 @@ func GetWord(file []string, pos defines.Position) string {
     if int(pos.Character) >= len(line) {
         return ""
     }
-    sstr := line[pos.Character:]
-    if len(sstr) == 0 {
-        return ""
+
+    // Search left for the beginning of the word
+    start := pos.Character
+    for start > 0 && line[start-1] != ' ' {
+        start--
     }
-    index := strings.IndexByte(sstr, ' ')
-    if index < 0 {
-        index = len(sstr) - 1
+
+    // Search right for the end of the word
+    end := pos.Character
+    for int(end) < len(line) && line[end] != ' ' {
+        end++
     }
-    return sstr[:index]
+
+    return line[start:end]
 }
 
-func ReadFile(filename defines.DocumentUri) ([]string, error) {
-	enEscapeUrl, _ := url.QueryUnescape(string(filename))
-	data, err := os.ReadFile(enEscapeUrl[6:])
-	if err != nil {
-		return nil, err
-	}
-	content := string(data)
-	line := strings.Split(content, "\n")
-	return line, nil
+func ApplyChanges(file []string, changes []defines.TextDocumentContentChangeEvent) []string {
+    for _, change := range changes {
+        file = strings.Split(change.Text.(string), "\n")
+    }
+
+    return file
 }
 
 func main() {
