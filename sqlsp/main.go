@@ -1,5 +1,15 @@
 package main
 
+/*
+#include "../libsqanalysis/analysis.h"
+#include "../sq/sq.h"
+
+static SQAOp sqa_ops_get(int i) {
+    return sqa_ops[i];
+}
+*/
+import "C"
+
 import (
 	"errors"
 	"strings"
@@ -11,49 +21,6 @@ import (
 
 	_ "github.com/tliron/commonlog/simple"
 )
-
-var operations = map[string]string{
-    "any":      "any",
-    "append":   "append",
-    "axis":     "axis",
-    "contains": "contains",
-    "deshape":  "deshape",
-    "falpha":   "falpha fdigit falnum fpunct fwhite",
-    "fdigit":   "falpha fdigit falnum fpunct fwhite",
-    "falnum":   "falpha fdigit falnum fpunct fwhite",
-    "fpunct":   "falpha fdigit falnum fpunct fwhite",
-    "fwhite":   "falpha fdigit falnum fpunct fwhite",
-    "fnalpha":  "fnalpha fndigit fnalnum fnpunct fnwhite",
-    "fndigit":  "fnalpha fndigit fnalnum fnpunct fnwhite",
-    "fnalnum":  "fnalpha fndigit fnalnum fnpunct fnwhite",
-    "fnpunct":  "fnalpha fndigit fnalnum fnpunct fnwhite",
-    "fnwhite":  "fnalpha fndigit fnalnum fnpunct fnwhite",
-    "filter":   "filter",
-    "flatmap":  "flatmap",
-    "flatten":  "flatten",
-    "group":    "group",
-    "invert":   "invert",
-    "join":     "join",
-    "len":      "len",
-    "make":     "make",
-    "map":      "map",
-    "noempty":  "noempty",
-    "parse":    "parse",
-    "prepend":  "prepend",
-    "ranges":   "ranges",
-    "rev":      "rev",
-    "run":      "run",
-    "same":     "same",
-    "select":   "select",
-    "slit":     "split",
-    "str":      "str",
-    "tokens":   "tokens",
-    "tolower":  "tolower toupper",
-    "toupper":  "tolower toupper",
-    "transform":"transform",
-    "use":      "use",
-    "with":     "with",
-}
 
 var (
 	handler protocol.Handler
@@ -91,16 +58,23 @@ func runLsp() {
         TextDocumentHover: hover,
         TextDocumentCompletion: func(ctx *glsp.Context, req *protocol.CompletionParams) (result any, err error) {
     		d := protocol.CompletionItemKindFunction
-            items := make([]protocol.CompletionItem, len(operations))
+            items := []protocol.CompletionItem{}
             i := 0
-            for op, doc := range operations { 
-                items[i] = protocol.CompletionItem{
-                    Label:          op,
-                    Kind:           &d,
-                    InsertText:     &op,
-                    Documentation:  doc,
+            for {
+                op := C.sqa_ops_get(C.int(i))
+                if op.name == nil {
+                    break
                 }
-                i += 1
+                name := C.GoString(op.name)
+                docEntry := C.findDocEntry(op.docPage)
+                doc := C.GoString(docEntry.text)
+
+                items = append(items, protocol.CompletionItem{
+                    Label:          name,
+                    Kind:           &d,
+                    InsertText:     &name,
+                    Documentation:  doc,
+                })
             }
 		    return &items, nil
 	    },
@@ -203,6 +177,4 @@ func ApplyChanges(file []string, changes []any) []string {
     return file
 }
 
-func main() {
-    runLsp()
-}
+func main() {}

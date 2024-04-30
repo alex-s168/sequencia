@@ -171,6 +171,12 @@ enum CompileResult target_libsqanalysis() {
 
 /* ========================================================================= */
 
+enum CompileResult target_sqlsp() {
+
+}
+
+/* ========================================================================= */
+
 struct Target targets[] = {
     { .name = "clean",           .run = target_clean },
     { .name = "deps",            .run = target_deps },
@@ -178,6 +184,7 @@ struct Target targets[] = {
     { .name = "doc/text",        .run = target_doc_text },
     { .name = "libsq.a",         .run = target_libsq },
     { .name = "libsqanalysis.a", .run = target_libsqanalysis },
+    { .name = "sqlsp",           .run = target_sqlsp() },
     { .name = "sq.exe",          .run = target_sq },
 };
 

@@ -1,6 +1,10 @@
 #include <string.h>
 #include "analysis.h"
 
+SQAOp *sqa_op_all() {
+    return sqa_ops;
+}
+
 SQAOp *sqa_op_lookup(const char *name) {
     size_t i = 0;
     while (true) {

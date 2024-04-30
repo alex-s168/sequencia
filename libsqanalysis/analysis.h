@@ -29,5 +29,7 @@ typedef struct {
 // null terminated
 extern SQAOp sqa_ops[];
 
+SQAOp *sqa_ops_all();
+
 SQAOp *sqa_op_lookup(const char *name);
 bool sqa_op_accepts(SQAOp op, SQValue val);

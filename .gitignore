@@ -6,3 +6,6 @@ build.exe
 kollektions/build.exe
 test.sq
 sqlsp/sqlsp.exe
+sqlsp/sqlsp.h
+sqlsp/sqlsp.a
+sqlsp/_obj
