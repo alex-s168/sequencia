@@ -13,3 +13,15 @@ size_t indent(const char *str) {
     }
     return in;
 }
+
+size_t indent_ascii(const char *str) {
+    size_t in = 0;
+    for (; *str != '\0'; str ++) {
+        if (*str == ' ' || *str == '\t') {
+            in ++;
+        } else {
+            break;
+        }
+    }
+    return in;
+}
