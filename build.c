@@ -1,4 +1,3 @@
-#include <stdio.h>
 #ifndef CC
 # define CC        "clang"
 #endif
@@ -18,6 +17,8 @@
 enum CompileResult target_clean() {
     rmdir("build/");
     rmdir("kollektions/build/");
+    rmfile("sqlsp/sqlsp.a");
+    rmfile("sqlsp/sqlsp.h");
     return CR_OK;
 }
 
@@ -172,7 +173,12 @@ enum CompileResult target_libsqanalysis() {
 /* ========================================================================= */
 
 enum CompileResult target_sqlsp() {
-
+    ONLY_IF({
+        NOT_FILE("sqlsp/sqlsp.a");
+        NOT_FILE("sqlsp/sqlsp.h");
+        CHANGED("sqlsp/main.go");
+    });
+    return shell("cd sqlsp && ./build.sh");
 }
 
 /* ========================================================================= */
@@ -184,7 +190,7 @@ struct Target targets[] = {
     { .name = "doc/text",        .run = target_doc_text },
     { .name = "libsq.a",         .run = target_libsq },
     { .name = "libsqanalysis.a", .run = target_libsqanalysis },
-    { .name = "sqlsp",           .run = target_sqlsp() },
+    { .name = "sqlsp",           .run = target_sqlsp },
     { .name = "sq.exe",          .run = target_sq },
 };
 

@@ -8,6 +8,10 @@ if [ "$USE_NOTCURSES" = "1" ]; then
     LDFLAGS="$LDFLAGS -lnotcurses -lnotcurses-core"
 fi
 
+if [ "$BUILD_LSP" = "1" ]; then
+    CFLAGS="$CFLAGS -DBUILD_LSP"
+fi
+
 $CC $CFLAGS -DCC=\""$CC"\" -DCC_ARGS=\""$CFLAGS"\" -DLD_ARGS=\""$LDFLAGS"\" build.c -o build.exe
 
 if [ -z "$1" ]; then
@@ -25,8 +29,20 @@ if [ -z "$1" ]; then
     echo "# libsq.a"
     ./build.exe "libsq.a"
 
-    echo "# sq.exe"
-    ./build.exe "sq.exe"
+    if [ "$BUILD_LSP" = "1" ]; then
+        echo "# libsqanalysis.a"
+        ./build.exe "libsqanalysis.a"
+
+        echo "# sqlsp"
+        ./build.exe "sqlsp"
+
+        echo "# sq.exe"
+        $CC $CFLAGS -DCC=\""$CC"\" -DCC_ARGS=\""$CFLAGS"\" -DLD_ARGS=\""$LDFLAGS sqlsp/sqlsp.a"\" build.c -o build.exe
+        ./build.exe "sq.exe"
+    else
+        echo "# sq.exe"
+        ./build.exe "sq.exe"
+    fi
 else
     ./build.exe "$1"
 fi
