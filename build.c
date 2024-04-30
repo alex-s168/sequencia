@@ -145,13 +145,40 @@ enum CompileResult target_libsq() {
 
 /* ========================================================================= */
 
+struct CompileData target_libsqanalysis_files[] = {
+    DIR("build"),
+
+    DIR("build/libsqanalysis"),
+    SP(CT_C, "libsqanalysis/all.c"),
+    SP(CT_C, "libsqanalysis/doc.c"),
+    SP(CT_C, "libsqanalysis/op.c"),
+    SP(CT_C, "libsqanalysis/utils.c"),
+    SP(CT_C, "libsqanalysis/value.c"),
+};
+
+enum CompileResult target_libsqanalysis() {
+    ONLY_IF({
+        NOT_FILE("build/libsqanalysis.a");
+        CHANGED("libsqanalysis/");
+    });
+
+    START;
+    DO(verifyDependencies(LI(target_libsqanalysis_files)));
+    DO(compile(LI(target_libsqanalysis_files)));
+    DO(linkTask(LI(target_libsqanalysis_files), "build/libsqanalysis.a"));
+    END;
+}
+
+/* ========================================================================= */
+
 struct Target targets[] = {
-    { .name = "clean",          .run = target_clean },
-    { .name = "deps",           .run = target_deps },
-    { .name = "doc/glamour",    .run = target_doc_glamour },
-    { .name = "doc/text",       .run = target_doc_text },
-    { .name = "libsq.a",        .run = target_libsq },
-    { .name = "sq.exe",         .run = target_sq },
+    { .name = "clean",           .run = target_clean },
+    { .name = "deps",            .run = target_deps },
+    { .name = "doc/glamour",     .run = target_doc_glamour },
+    { .name = "doc/text",        .run = target_doc_text },
+    { .name = "libsq.a",         .run = target_libsq },
+    { .name = "libsqanalysis.a", .run = target_libsqanalysis },
+    { .name = "sq.exe",          .run = target_sq },
 };
 
 #define TARGETS_LEN (sizeof(targets) / sizeof(targets[0]))

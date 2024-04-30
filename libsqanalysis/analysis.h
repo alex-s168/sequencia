@@ -16,6 +16,8 @@ typedef struct {
 
 typedef struct DynamicList TYPES(SQAError) SQAErrors;
 
+void sqaerrors_clean(SQAErrors *errors);
+
 SQValue sqa_analyze_value(const char *str, size_t info_line, size_t info_col, SQAErrors *dest);
 void sqa_analyze(SQAScript script, SQAErrors *dest);
 

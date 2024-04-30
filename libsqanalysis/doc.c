@@ -2,7 +2,8 @@
 #include "analysis.h"
 
 SQAOp *sqa_op_lookup(const char *name) {
-    for (size_t i = 0; true; i ++) {
+    size_t i = 0;
+    while (true) {
         SQAOp *op = &sqa_ops[i];
 
         if (op->name == NULL)
@@ -10,50 +11,52 @@ SQAOp *sqa_op_lookup(const char *name) {
 
         if (strcmp(name, op->name) == 0)
             return op;
+
+        i ++;
     }
 }
 
 SQAOp sqa_ops[] = {
-    (SQAOp) { "any", "any" },
-    (SQAOp) { "append", "append" },
-    (SQAOp) { "axis", "axis" },
-    (SQAOp) { "contains", "contains" },
-    (SQAOp) { "deshape", "deshape" },
-    (SQAOp) { "falpha", "falpha fdigit falnum fpunct fwhite" },
-    (SQAOp) { "fdigit", "falpha fdigit falnum fpunct fwhite" },
-    (SQAOp) { "falnum", "falpha fdigit falnum fpunct fwhite" },
-    (SQAOp) { "fpunct", "falpha fdigit falnum fpunct fwhite" },
-    (SQAOp) { "fwhite", "falpha fdigit falnum fpunct fwhite" },
-    (SQAOp) { "fnalpha", "fnalpha fndigit fnalnum fnpunct fnwhite" },
-    (SQAOp) { "fndigit", "fnalpha fndigit fnalnum fnpunct fnwhite" },
-    (SQAOp) { "fnalnum", "fnalpha fndigit fnalnum fnpunct fnwhite" },
-    (SQAOp) { "fnpunct", "fnalpha fndigit fnalnum fnpunct fnwhite" },
-    (SQAOp) { "fnwhite", "fnalpha fndigit fnalnum fnpunct fnwhite" },
-    (SQAOp) { "filter", "filter" },
-    (SQAOp) { "flatmap", "flatmap" },
-    (SQAOp) { "flatten", "flatten" },
-    (SQAOp) { "group", "group" },
-    (SQAOp) { "invert", "invert" },
-    (SQAOp) { "join", "join" },
-    (SQAOp) { "len", "len" },
-    (SQAOp) { "make", "make" },
-    (SQAOp) { "map", "map" },
-    (SQAOp) { "noempty", "noempty" },
-    (SQAOp) { "parse", "parse" },
-    (SQAOp) { "prepend", "prepend" },
-    (SQAOp) { "ranges", "ranges" },
-    (SQAOp) { "rev", "rev" },
-    (SQAOp) { "run", "run" },
-    (SQAOp) { "same", "same" },
-    (SQAOp) { "select", "select" },
-    (SQAOp) { "slit", "split" },
-    (SQAOp) { "str", "str" },
-    (SQAOp) { "tokens", "tokens" },
-    (SQAOp) { "tolower", "tolower toupper" },
-    (SQAOp) { "toupper", "tolower toupper" },
-    (SQAOp) { "transform", "transform" },
-    (SQAOp) { "use", "use" },
-    (SQAOp) { "with", "with" },
+    { .name = "any", .docPage = "any" },
+    { .name = "append", .docPage = "append" },
+    { .name = "axis", .docPage = "axis" },
+    { .name = "contains", .docPage = "contains" },
+    { .name = "deshape", .docPage = "deshape" },
+    { .name = "falpha", .docPage = "falpha fdigit falnum fpunct fwhite" },
+    { .name = "fdigit", .docPage = "falpha fdigit falnum fpunct fwhite" },
+    { .name = "falnum", .docPage = "falpha fdigit falnum fpunct fwhite" },
+    { .name = "fpunct", .docPage = "falpha fdigit falnum fpunct fwhite" },
+    { .name = "fwhite", .docPage = "falpha fdigit falnum fpunct fwhite" },
+    { .name = "fnalpha", .docPage = "fnalpha fndigit fnalnum fnpunct fnwhite" },
+    { .name = "fndigit", .docPage = "fnalpha fndigit fnalnum fnpunct fnwhite" },
+    { .name = "fnalnum", .docPage = "fnalpha fndigit fnalnum fnpunct fnwhite" },
+    { .name = "fnpunct", .docPage = "fnalpha fndigit fnalnum fnpunct fnwhite" },
+    { .name = "fnwhite", .docPage = "fnalpha fndigit fnalnum fnpunct fnwhite" },
+    { .name = "filter", .docPage = "filter" },
+    { .name = "flatmap", .docPage = "flatmap" },
+    { .name = "flatten", .docPage = "flatten" },
+    { .name = "group", .docPage = "group" },
+    { .name = "invert", .docPage = "invert" },
+    { .name = "join", .docPage = "join" },
+    { .name = "len", .docPage = "len" },
+    { .name = "make", .docPage = "make" },
+    { .name = "map", .docPage = "map" },
+    { .name = "noempty", .docPage = "noempty" },
+    { .name = "parse", .docPage = "parse" },
+    { .name = "prepend", .docPage = "prepend" },
+    { .name = "ranges", .docPage = "ranges" },
+    { .name = "rev", .docPage = "rev" },
+    { .name = "run", .docPage = "run" },
+    { .name = "same", .docPage = "same" },
+    { .name = "select", .docPage = "select" },
+    { .name = "slit", .docPage = "split" },
+    { .name = "str", .docPage = "str" },
+    { .name = "tokens", .docPage = "tokens" },
+    { .name = "tolower", .docPage = "tolower toupper" },
+    { .name = "toupper", .docPage = "tolower toupper" },
+    { .name = "transform", .docPage = "transform" },
+    { .name = "use", .docPage = "use" },
+    { .name = "with", .docPage = "with" },
 
-    (SQAOp) { NULL, NULL },
+    { .name = NULL, .docPage = NULL },
 };
