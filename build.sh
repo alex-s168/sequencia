@@ -3,6 +3,9 @@ set -e
 : "${CC:=tcc}"
 : "${CFLAGS:=-O2}"
 
+: "${GOCC:=$CC}"
+: "${GOCFLAGS:=$CFLAGS}"
+
 if [ "$USE_NOTCURSES" = "1" ]; then
     CFLAGS="$CFLAGS -DUSE_NOTCURSES"
     LDFLAGS="$LDFLAGS -lnotcurses -lnotcurses-core"
@@ -33,8 +36,13 @@ if [ -z "$1" ]; then
         echo "# libsqanalysis.a"
         ./build.exe "libsqanalysis.a"
 
+        OLDCC=$CC
+        OLDCFLAGS=$CFLAGS
         echo "# sqlsp"
-        ./build.exe "sqlsp"
+        CC=$GOCC CFLAGS=$GOCFLAGS ./build.exe "sqlsp"
+
+        CC=$OLDCC
+        CFLAGS=$OLDCFLAGS
 
         echo "# sq.exe"
         $CC $CFLAGS -DCC=\""$CC"\" -DCC_ARGS=\""$CFLAGS"\" -DLD_ARGS=\""$LDFLAGS sqlsp/sqlsp.a"\" build.c -o build.exe
