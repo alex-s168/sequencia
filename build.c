@@ -134,6 +134,7 @@ enum CompileResult target_libsq() {
     ONLY_IF({
         NOT_FILE("build/libsq.a");
         CHANGED("libsq/");
+        CHANGED("libsq/exec/");
     });
 
     START;

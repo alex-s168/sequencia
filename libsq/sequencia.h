@@ -91,6 +91,9 @@ extern bool gDebug;
 extern void (*gErrCallback)(const char *msg);
 extern void (*gDebugInstCallback)(SQValue input, const char *command, SQCommand children, SQValue arg);
 
+void println(SQStrView str);
+void prin(SQStrView str);
+
 static SQStr zdup(SQStr in) {
     SQStr res;
     DynamicList_copy(in, &res, gAlloc, 1);
@@ -133,7 +136,7 @@ static SQStrView zviewc(const char *str) {
     view.fixed.data = (void*) str;
     return view;
 }
-#define zview(str) ((SQStrView) {.fixed=str.fixed})
+#define zview(str) ((SQStrView) {.fixed=(str).fixed})
 #define zfree(str) DynamicList_clear(&str)
 
 #define ERR(msg) gErrCallback(msg)

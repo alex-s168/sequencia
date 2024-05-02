@@ -36,7 +36,7 @@ SQValue sqparse(SQStrView str, size_t *end) {
 
     if (CURR == '"') {
         index ++;
-        int en = FixedList_indexOfLast(str.fixed, (char[]) { '"' }) - index - 1;
+        int en = FixedList_indexOfLast(str.fixed, (char[]) { '"' }) - index;
         if (en < 0) {
             *end = index;
             return SQVAL_NULL();
@@ -45,7 +45,6 @@ SQValue sqparse(SQStrView str, size_t *end) {
         SQStrView view = str;
         view.fixed.data += sizeof(char) * index;
         view.fixed.len = en;
-
         const SQStr res = zdupv(view);
         *end = index;
         return SQVAL_STR(res);

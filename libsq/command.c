@@ -8,12 +8,12 @@
 SQCommand sqcommand_clone(const SQCommand cmd) {
     SQCommand new;
     new.views = false;
-
     DynamicList_init(&new.lines.actual, sizeof(SQStr), gAlloc, UNI_LEN(cmd));
+
     for (size_t i = 0; i < UNI_LEN(cmd); i ++) {
         SQStrView src = UNI_VIEW(UNI_GET(cmd, i));
-        SQStr *dst = FixedList_get(new.lines.actual.fixed, i);
-        *dst = zdupv(src);
+        SQStr str = zdupv(src);
+        DynamicList_add(&new.lines.actual, &str);
     }
     return new;
 }
@@ -54,6 +54,9 @@ SQCommandIterItem sqcmd_next(const SQCommand command, SQCommandIterState *state)
         take ++;
     }
 
+    if (min_indent == 345345324)
+        min_indent = state->indent;
+
     item.children.views = true;
     DynamicList_init(&item.children.lines.views, sizeof(SQStrView), gAlloc, take);
     for (size_t i = 0; i < take; i ++) {
@@ -66,7 +69,6 @@ SQCommandIterItem sqcmd_next(const SQCommand command, SQCommandIterState *state)
     }
 
     state->lindex += 1 + take;
-
     return item;
 }
 

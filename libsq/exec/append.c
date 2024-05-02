@@ -17,9 +17,12 @@ OPERATION(append) {
             return SQVAL_NULL();
         }
 
-        DynamicList_addAll(&input.str, arg.str.fixed.data, arg.str.fixed.len);
+        SQStr str = input.str;
 
-        return input;
+       if (DynamicList_addAll(&str, arg.str.fixed.data, arg.str.fixed.len))
+            ERR("Error adding to list!");
+
+       return SQVAL_STR(str);
     }
 
     ERR("\"append\" only operates on arrays and strings!");

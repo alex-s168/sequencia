@@ -32,11 +32,11 @@ SQValue sqexec(SQValue input, SQCommand cmd, SQValue arg_override) {
         int argstart = FixedList_indexOf(item.cmd.fixed, (char[]) { ' ' });
         SQValue arg = arg_override;
         SQStrView command = item.cmd;
-        if (argstart != -1) {
+        if (argstart >= 0) {
             size_t end;
             SQStrView args = item.cmd;
-            args.fixed.data += sizeof(char) * argstart;
-            args.fixed.len -= argstart;
+            args.fixed.data += sizeof(char) * (argstart + 1);
+            args.fixed.len -= argstart + 1;
             arg = sqparse(args, &end);
             command.fixed.len = argstart;
         }
