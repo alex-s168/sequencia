@@ -5,6 +5,7 @@
 SQArr sqarr_new(size_t len) {
     struct DynamicList li;
     DynamicList_init(&li, sizeof(SQValue), getLIBCAlloc(), len);
+    li.fixed.len = len;
     return li;
 }
 
