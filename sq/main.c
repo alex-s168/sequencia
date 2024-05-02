@@ -2,6 +2,12 @@
 #include <stdio.h>
 #include <string.h>
 
+#ifndef _INC_STDIO
+# define _INC_STDIO
+#endif
+
+#include "../kollektions/kallok/kallok.h"
+
 #include "sq.h"
 #include "../libsq/sequencia.h"
 
@@ -22,9 +28,8 @@ static const char *flag(const int argc, char **argv, const char *name1, const ch
 }
 
 static void normal(char *str, const SQCommand cmd, const bool debugOutput) {
-    const SQValue res = sqexecs(SQVAL_STR(str), cmd);
-
-    sqoutput(res, stdout, debugOutput, false, 0);
+    SQValue res = sqexecs(SQVAL_STR(zdupc(str)), cmd);
+    sqoutput(&res, stdout, debugOutput, false, 0);
     fputc('\n', stdout);
 }
 
@@ -141,6 +146,9 @@ static void lsdoc() {
 #endif
 }
 
+Ally gAlloc;
+static struct AllyStats allocStats;
+
 int main(const int argc, char **argv) {
     if (flagExist(getFlag(argc, argv, "--help")) ||
         flagExist(getFlag(argc, argv, "-h")) || argc == 1) {
@@ -152,8 +160,15 @@ int main(const int argc, char **argv) {
         printf("  -g  --debugger        Start interactive debugger; Requires \"-I\"!\n");
         printf("  -h  --help            Show this help message\n");
         printf("      --doc (topic)     Print out the documentation for the given topic OR list all topics available\n");
+        printf("      --stats           Print allocation statistics and similar\n");
         fputc('\n', stdout);
         return 0;
+    }
+
+    bool printAllocStats = flagExist(getFlag(argc, argv, "--stats"));
+    gAlloc = getLIBCAlloc();
+    if (printAllocStats) {
+        gAlloc = getStatAlloc(gAlloc, &allocStats);
     }
 
     Flag docFlag = getFlag(argc, argv, "--doc");
@@ -198,9 +213,7 @@ int main(const int argc, char **argv) {
             fprintf(stderr, "Either script code or script file needs to be specified!\n");
             return 1;
         }
-        char *str = strdup(scriptCode);
-        cmd = sqparseheap(str);
-        free(str);
+        cmd = sqparseheap(strdup(scriptCode));
     }
 
     const bool debugOutput = flagExist(getFlag(argc, argv, "-d")) ||
@@ -234,6 +247,10 @@ int main(const int argc, char **argv) {
 
     gDebug = debugger;
     normal(str, cmd, debugOutput);
+
+    if (printAllocStats) {
+        outputStats(&allocStats, stdout);
+    }
 
     return 0;
 }

@@ -1,6 +1,5 @@
 #include <stdbool.h>
 #include <stdio.h>
-#include <stdlib.h>
 
 #include "operations.h"
 
@@ -11,25 +10,15 @@ OPERATION(parse) {
         return SQVAL_NULL();
     }
 
-    int base = 10;
-    if (arg.type == SQ_NUMBER) {
-        base = arg.num;
-    }
-
-    char *end;
-    const SQNum num = strtol(input.str, &end, base);
-    if (*end) {
-        sqfree(input);
-        return SQVAL_NULL();
-    }
+    size_t end;
+    SQValue res = sqparse(zview(input.str), &end);
 
     sqfree(input);
-    return SQVAL_NUM(num);
+    return res;
 }
 
 OPERATION(str) {
-    char *res = sqstringify(input);
-
+    SQStr res = sqstringify(input);
     sqfree(input);
     return SQVAL_STR(res);
 }

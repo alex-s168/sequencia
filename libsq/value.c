@@ -2,60 +2,72 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "sequencia.h"
 
-SQValue sqparse(char *str, char **end) {
-    while (*str == ' ')
-        str ++;
+SQValue sqparse(SQStrView str, size_t *end) {
+    size_t index = 0;
+#define CURRN(o) ((index + o) >= str.fixed.len ? '\0' : *(char*)FixedList_get(str.fixed, index + o))
+#define CURR CURRN(0)
 
-    if (*str == '[') {
-        str ++;
+    while (CURR == ' ')
+        index ++;
+
+    if (CURR == '[') {
+        index ++;
         SQArr arr = sqarr_new(0);
         while (true) {
-            char *temp;
-            const SQValue val = sqparse(str, &temp);
+            size_t temp;
+            SQStrView toparse = str;
+            toparse.fixed.data += sizeof(char) * index;
+            toparse.fixed.len -= index;
+            const SQValue val = sqparse(toparse, &temp);
             sqarr_add(&arr, val);
-            str = temp;
-            if (*str != ',')
+            index += temp; 
+            if (CURR != ',')
                 break;
-            str ++;
+            index ++;
         }
-        if (*str == ']')
-            str ++;
-        *end = str;
+        if (CURR == ']')
+            index ++;
+        *end = index;
         return SQVAL_ARR(arr);
     }
 
-    if (*str == '"') {
-        str ++;
-        const char *start = str;
-        while (*str != '\0') {
-            if (*str == '"') {
-                *str = '\0';
-                str ++;
-                break;
-            }
-            str ++;
+    if (CURR == '"') {
+        index ++;
+        int en = FixedList_indexOfLast(str.fixed, (char[]) { '"' }) - index - 1;
+        if (en < 0) {
+            *end = index;
+            return SQVAL_NULL();
         }
-        const SQStr res = strdup(start);
-        *end = str;
+
+        SQStrView view = str;
+        view.fixed.data += sizeof(char) * index;
+        view.fixed.len = en;
+
+        const SQStr res = zdupv(view);
+        *end = index;
         return SQVAL_STR(res);
     }
 
-    const SQNum num = strtol(str, end, 10);
-    if (*end == str) {
-        if (str[0] == 'n' && str[1] == 'l') {
-            *end = str + 2;
-            return SQVAL_STR(strdup("\n"));
+    static char buf[256];
+    memcpy(buf, str.fixed.data + sizeof(char) * index, str.fixed.len - index);
+    buf[str.fixed.len - index + 1] = '\0';
+
+    char *endd;
+    const SQNum num = strtol(buf, &endd, 10);
+    if (endd == buf) {
+        if (CURRN(0) == 'n' && CURRN(1) == 'l') {
+            *end = index + 2;
+            return SQVAL_STR(zdupc("\n"));
         }
-        if (str[0] == 't' && str[1] == 'a' && str[2] == 'b') {
-            *end = str + 3;
-            return SQVAL_STR(strdup("\t"));
+        if (CURRN(0) == 't' && CURRN(1) == 'a' && CURRN(2) == 'b') {
+            *end = index + 3;
+            return SQVAL_STR(zdupc("\t"));
         }
-        if (str[0] == 'n' && str[1] == 'u' && str[2] == 'l' && str[3] == 'l') {
-            *end = str + 4;
+        if (CURRN(0) == 'n' && CURRN(1) == 'u' && CURRN(2) == 'l' && CURRN(3) == 'l') {
+            *end = index + 4;
             return SQVAL_NULL();
         }
         return SQVAL_NULL();
@@ -64,34 +76,34 @@ SQValue sqparse(char *str, char **end) {
     return SQVAL_NUM(num);
 }
 
-char *sqstringify(SQValue val) {
+SQStr sqstringify(SQValue val) {
     switch (val.type) {
         case SQ_NULL: {
-            return NULL;
+            return zempty();
         }
 
         case SQ_NUMBER: {
             static char buf[256];
             sprintf(buf, "%lld", val.num);
-            return strdup(buf);
+            return zdupc(buf);
         }
 
         case SQ_STRING: {
-            return strdup(val.str);
+            return zdup(val.str);
         }
 
         case SQ_ARRAY: {
             if (val.arr.fixed.len == 0)
-                return NULL;
+                return zempty();
             fprintf(stderr, "Can't automatically join array!\n");
-            return NULL;
+            return zempty();
         }
     }
     assert(false);
 }
 
-void sqoutput(SQValue val, FILE *out, bool debug, bool ptrs, size_t indent) {
-    switch (val.type) {
+void sqoutput(SQValue *val, FILE *out, bool debug, bool ptrs, size_t indent) {
+    switch (val->type) {
         case SQ_NULL:
             if (debug) {
                 fprintf(out, "(null)");
@@ -99,19 +111,21 @@ void sqoutput(SQValue val, FILE *out, bool debug, bool ptrs, size_t indent) {
             break;
 
         case SQ_NUMBER: {
-            fprintf(out, "%lld", val.num);
+            fprintf(out, "%lld", val->num);
         }
         break;
 
         case SQ_STRING: {
+            zterminate(&val->str);
+            char *str = val->str.fixed.data;
             if (debug) {
                 if (ptrs)
-                    fprintf(out, "0x%p=\"%s\"", val.str, val.str);
+                    fprintf(out, "0x%p=\"%s\"", str, str);
                 else
-                    fprintf(out, "\"%s\"", val.str);
+                    fprintf(out, "\"%s\"", str);
             }
             else {
-                fprintf(out, "%s", val.str);
+                fprintf(out, "%s", str);
             }
         }
         break;
@@ -119,15 +133,15 @@ void sqoutput(SQValue val, FILE *out, bool debug, bool ptrs, size_t indent) {
         case SQ_ARRAY: {
             if (debug) {
                 if (ptrs)
-                    fprintf(out, "0x%p=[\n", val.arr.fixed.data);
+                    fprintf(out, "0x%p=[\n", val->arr.fixed.data);
                 else
                     fprintf(out, "[\n");
-                for (size_t i = 0; i < val.arr.fixed.len; i ++) {
+                for (size_t i = 0; i < val->arr.fixed.len; i ++) {
                     if (i > 0)
                         fprintf(out, ",\n");
                     for (size_t j = 0; j < indent + 1; j ++)
                         fputs("  ", out);
-                    sqoutput(*sqarr_at(val.arr, i), out, true, ptrs, indent + 1);
+                    sqoutput(sqarr_at(val->arr, i), out, true, ptrs, indent + 1);
                 }
                 fputc('\n', out);
                 for (size_t j = 0; j < indent; j ++)
@@ -135,7 +149,7 @@ void sqoutput(SQValue val, FILE *out, bool debug, bool ptrs, size_t indent) {
                 fputc(']', out);
             }
             else {
-                fprintf(stderr, "Cannot print array! Try to run with \"-d\" (or \"--debug-output\")\n");
+                ERR("Cannot print array! Try to run with \"-d\" (or \"--debug-output\")\n");
             }
         }
         break;
@@ -146,7 +160,7 @@ void sqfree(SQValue val) {
     if (val.type == SQ_ARRAY)
         sqarr_free_rec(val.arr);
     else if (val.type == SQ_STRING)
-        free(val.str);
+        zfree(val.str);
 }
 
 SQValue sqdup(const SQValue val) {
@@ -156,7 +170,7 @@ SQValue sqdup(const SQValue val) {
             return val;
 
         case SQ_STRING:
-            return SQVAL_STR(strdup(val.str));
+            return SQVAL_STR(zdup(val.str));
 
         case SQ_ARRAY: {
             const SQArr res = sqarr_new(val.arr.fixed.len);
@@ -182,7 +196,7 @@ bool sqeq(const SQValue a, const SQValue b) {
             return a.num == b.num;
 
         case SQ_STRING:
-            return strcmp(a.str, b.str) == 0;
+            return zequal(a.str, b.str);
 
         case SQ_ARRAY: {
             if (a.arr.fixed.len != b.arr.fixed.len)

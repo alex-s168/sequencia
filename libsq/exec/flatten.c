@@ -1,7 +1,4 @@
 #include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include "operations.h"
 
@@ -50,7 +47,7 @@ OPERATION(flatten) {
 
 OPERATION(flatmap) {
     SQCommand cmd;
-    cmd.lines = NULL;
-    cmd.lines_len = 0;
+    cmd.views = true;
+    cmd.lines.views.fixed.len = 0;
     return sqop_flatten(sqop_map(input, children, arg), cmd, SQVAL_NULL());
 }

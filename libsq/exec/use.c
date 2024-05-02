@@ -1,5 +1,4 @@
 #include <stdbool.h>
-#include <stdio.h>
 
 #include "operations.h"
 
@@ -70,7 +69,7 @@ OPERATION(use) {
         return SQVAL_ARR(res);
     }
 
-    ERR("\"use\" takes array of indecies or index as argument!");
+    ERR("\"use\" takes array of indices or index as argument!");
     sqfree(input);
     return SQVAL_NULL();
 }

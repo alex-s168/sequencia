@@ -13,3 +13,17 @@ size_t indent(const char *str) {
     }
     return in;
 }
+
+size_t zvindent(SQStrView str) {
+    size_t in;
+    for (size_t i = 0; i < str.fixed.len; i ++) {
+        char c = *(char*)FixedList_get(str.fixed, i);
+        if (c == ' ')
+            in ++;
+        else if (c == '\t')
+            in += 8;
+        else
+            break;
+    }
+    return in;
+}

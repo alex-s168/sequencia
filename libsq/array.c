@@ -1,10 +1,8 @@
-#include <stdlib.h>
-
 #include "sequencia.h"
 
 SQArr sqarr_new(size_t len) {
     struct DynamicList li;
-    DynamicList_init(&li, sizeof(SQValue), getLIBCAlloc(), len);
+    DynamicList_init(&li, sizeof(SQValue), gAlloc, len);
     li.fixed.len = len;
     return li;
 }

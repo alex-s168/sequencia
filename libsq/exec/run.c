@@ -14,25 +14,33 @@ OPERATION(run) {
     }
 
     const char *prefix = "";
-    const char *to = sqstringify(input);
-    if (to != NULL) {
+    SQStr to = sqstringify(input);
+    zterminate(&to);
+    {
         const char *tofile = ".sequencia.temp.a";
         FILE *f = fopen(tofile, "w");
         assert(f != NULL);
-        fputs(to, f);
+        fputs((char*)to.fixed.data, f);
         fclose(f);
         prefix = "cat .sequencia.temp.a | ";
     }
+    zfree(to);
 
     sqfree(input);
 
+    SQStr argCopy = zdup(arg.str);
+    zterminate(&argCopy);
+
     static char cmd[256];
-    sprintf(cmd, "%s%s > .sequencia.temp.b", prefix, arg.str);
+    sprintf(cmd, "%s%s > .sequencia.temp.b", prefix, (char*)argCopy.fixed.data);
+    zfree(argCopy);
     (void) system(cmd);
 
     FILE *from = fopen(".sequencia.temp.b", "r");
     char *all = readFile(from);
     fclose(from);
 
-    return SQVAL_STR(all);
+    SQStr str = zdupc(all);
+    free(all);
+    return SQVAL_STR(str);
 }

@@ -1,6 +1,4 @@
 #include <stdbool.h>
-#include <stdio.h>
-#include <string.h>
 
 #include "operations.h"
 
@@ -11,7 +9,7 @@ OPERATION(len) {
         return SQVAL_NUM(len);
     }
     if (input.type == SQ_STRING) {
-        const size_t len = strlen(input.str);
+        const size_t len = input.str.fixed.len;
         sqfree(input);
         return SQVAL_NUM(len);
     }

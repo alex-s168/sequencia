@@ -1,7 +1,4 @@
 #include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include "operations.h"
 
@@ -41,9 +38,23 @@ OPERATION(contains) {
             return SQVAL_NULL();
         }
 
-        const char *where = strstr(input.str, arg.str);
+        bool found = true;
+        for (size_t i = 0; i < input.str.fixed.len; i ++) {
+            for (size_t j = 0; j < arg.str.fixed.len; j ++) {
+                char a = *(char*)FixedList_get(input.str.fixed, i);
+                char b = *(char*)FixedList_get(arg.str.fixed, i);
+                if (a != b) {
+                    found = false;
+                    break;
+                }
+            }
+
+            if (found)
+                break;
+        }
+
         sqfree(input);
-        return SQVAL_NUM(where == NULL ? 0 : 1);
+        return SQVAL_NUM(found ? 1 : 0);
     }
 
     ERR("\"contains\" only operates on arrays and strings!");

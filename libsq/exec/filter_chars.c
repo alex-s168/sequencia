@@ -1,8 +1,5 @@
 #include <ctype.h>
 #include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include "operations.h"
 
@@ -13,21 +10,14 @@ static SQValue filterstr_cmd(const SQValue input, int (*passes)(int c), const bo
         return SQVAL_NULL();
     }
 
-    const size_t len = strlen(input.str);
-
-    size_t filtered_len = 0;
-    for (size_t i = 0; i < len; i ++) {
-        filtered_len += passes(input.str[i]);
-    }
-
-    char *new = malloc(len + 1);
-    char *ptr = new;
-    for (size_t i = 0; i < len; i ++) {
-        bool pass = passes(input.str[i]);
+    SQStr new = zempty();
+    for (size_t i = 0; i < input.str.fixed.len; i ++) {
+        char c = *(char*)FixedList_get(input.str.fixed, i);
+        bool pass = passes(c);
         if ((pass && !invert) || (!pass && invert))
-            *ptr++ = input.str[i];
+            DynamicList_add(&new, &c);
     }
-    *ptr = '\0';
+
     sqfree(input);
     return SQVAL_STR(new);
 }

@@ -1,20 +1,21 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "sequencia.h"
 
+// DO NOT REMOVE:
 #define FILELIB_IMPL
 #include "../minilibs/filelib.h"
 
 #include "exec/operations.h"
 #undef OPERATION
 
-SQValue sqexec_single(SQValue input, const char *command, SQCommand children, SQValue arg) {
-    if (gDebug)
-        gDebugInstCallback(input, command, children, arg);
+SQValue sqexec_single(SQValue input, SQStrView view, SQCommand children, SQValue arg) {
+    if (gDebug) {
+        SQStr copy = zdupv(view);
+        zterminate(&copy);
+        gDebugInstCallback(input, (char*)copy.fixed.data, children, arg);
+        zfree(copy);
+    }
 
-#define OPERATION(name) if (strcmp(command, #name) == 0) \
+#define OPERATION(name) if (zvequal(view, zviewc(#name))) \
     return sqop_##name(input, children, arg);
 
 #include "exec/operations.h"
@@ -28,25 +29,20 @@ SQValue sqexec_single(SQValue input, const char *command, SQCommand children, SQ
 SQValue sqexec(SQValue input, SQCommand cmd, SQValue arg_override) {
     SQValue acc = input;
     SQITER(cmd, item, {
-        if (item.cmd[0] == '\0')
-            continue;
-
-        char *argstart = strchr(item.cmd, ' ');
-        char *args = "";
-        if (argstart != NULL) {
-            *argstart = '\0';
-            args = argstart + 1;
+        int argstart = FixedList_indexOf(item.cmd.fixed, (char[]) { ' ' });
+        SQValue arg = arg_override;
+        SQStrView command = item.cmd;
+        if (argstart != -1) {
+            size_t end;
+            SQStrView args = item.cmd;
+            args.fixed.data += sizeof(char) * argstart;
+            args.fixed.len -= argstart;
+            arg = sqparse(args, &end);
+            command.fixed.len = argstart;
         }
-        const char *command = item.cmd;
-        char *end;
-        SQValue arg = sqparse(args, &end);
         if (arg.type == SQ_NULL)
             arg = arg_override;
         acc = sqexec_single(acc, command, item.children, arg);
     });
-    for (size_t i = 0; i < cmd.lines_len; i ++) {
-        free(cmd.lines[i]);
-    }
-    free(cmd.lines);
     return acc;
 }

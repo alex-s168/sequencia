@@ -1,7 +1,4 @@
 #include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include "operations.h"
 
@@ -20,14 +17,9 @@ OPERATION(append) {
             return SQVAL_NULL();
         }
 
-        const size_t app_len = strlen(arg.str);
+        DynamicList_addAll(&input.str, arg.str.fixed.data, arg.str.fixed.len);
 
-        const size_t len = strlen(input.str);
-        const SQStr new = realloc(input.str, len + app_len + 1);
-        memcpy(new + len, arg.str, app_len);
-        new[len + app_len] = '\0';
-
-        return SQVAL_STR(new);
+        return input;
     }
 
     ERR("\"append\" only operates on arrays and strings!");
@@ -49,14 +41,9 @@ OPERATION(prepend) {
             return SQVAL_NULL();
         }
 
-        const size_t app_len = strlen(arg.str);
-        const size_t len = strlen(input.str);
-        const SQStr new = malloc(len + app_len + 1);
-        memcpy(new, arg.str, app_len);
-        memcpy(new + app_len, input.str, len);
-        new[len + app_len] = '\0';
-        free(input.str);
-        return SQVAL_STR(new);
+        DynamicList_insertAllAt(&input.str, 0, arg.str.fixed.data, arg.str.fixed.len);
+
+        return input;
     }
 
     ERR("\"prepend\" only operates on arrays and strings!");

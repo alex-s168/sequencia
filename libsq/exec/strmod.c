@@ -10,10 +10,9 @@ OPERATION(tolower) {
         return SQVAL_NULL();
     }
 
-    char *ptr = input.str;
-    while (*ptr != '\0') {
-        *ptr = tolower(*ptr);
-        ptr ++;
+    for (size_t i = 0; i < input.str.fixed.len; i ++) {
+        char *c = FixedList_get(input.str.fixed, i);
+        *c = towlower(*c);
     }
 
     return input;
@@ -26,10 +25,9 @@ OPERATION(toupper) {
         return SQVAL_NULL();
     }
 
-    char *ptr = input.str;
-    while (*ptr != '\0') {
-        *ptr = toupper(*ptr);
-        ptr ++;
+    for (size_t i = 0; i < input.str.fixed.len; i ++) {
+        char *c = FixedList_get(input.str.fixed, i);
+        *c = toupper(*c);
     }
 
     return input;

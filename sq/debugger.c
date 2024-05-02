@@ -20,20 +20,11 @@ static void debCallback(SQValue input, const char *command, SQCommand children, 
             exit(0);
         }
         else if (strcmp(op, "val") == 0) {
-            sqoutput(input, stdout, true, false, 0);
+            sqoutput(&input, stdout, true, false, 0);
             fputc('\n', stdout);
         }
         else if (strcmp(op, "op") == 0) {
             puts(command);
-            size_t ch = children.lines_len;
-            if (ch > 3)
-                ch = 3;
-
-            for (size_t i = 0; i < ch; i ++)
-                printf("  %s\n", children.lines[i]);
-            
-            if (children.lines_len > 3)
-                puts("  ...");
         }
         else if (strcmp(op, "run") == 0) {
             stepping = false;

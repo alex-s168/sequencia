@@ -1,5 +1,4 @@
 #include <stdbool.h>
-#include <stdio.h>
 
 #include "operations.h"
 
@@ -16,7 +15,7 @@ OPERATION(select) {
         for (size_t i = 0; i < arg.arr.fixed.len; i ++) {
             const SQValue index = *sqarr_at(arg.arr, i);
             if (index.type != SQ_NUMBER) {
-                ERR("Can only perform \"select\" with array of indecies!");
+                ERR("Can only perform \"select\" with array of indices!");
                 continue;
             }
             SQNum indexid = index.num;
@@ -45,7 +44,7 @@ OPERATION(select) {
         return val;
     }
 
-    ERR("Can only perform \"select\" with array of indecies or number (index)!");
+    ERR("Can only perform \"select\" with array of indices or number (index)!");
     sqfree(input);
     return SQVAL_NULL();
 }
