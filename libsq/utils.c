@@ -42,6 +42,15 @@ void print(const SQStrView str) {
     zfree(copy);
 }
 
-
-
+size_t indent_ascii(const char *str) {
+    size_t in = 0;
+    for (; *str != '\0'; str ++) {
+        if (*str == ' ' || *str == '\t') {
+            in ++;
+        } else {
+            break;
+        }
+    }
+    return in;
+}
 

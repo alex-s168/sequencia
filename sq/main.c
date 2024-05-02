@@ -161,7 +161,7 @@ int main(const int argc, char **argv) {
         printf("  -h  --help            Show this help message\n");
         printf("      --doc (topic)     Print out the documentation for the given topic OR list all topics available\n");
         printf("      --stats           Print allocation statistics and similar\n");
-        fputc('\n', stdout);
+        printf("\n");
         return 0;
     }
 
@@ -190,31 +190,32 @@ int main(const int argc, char **argv) {
         return 0;
     }
 
-    SQCommand cmd;
-
-    const char *scriptFile = flag(argc, argv, "-S", "--file", NULL);
-    if (scriptFile != NULL) {
-        FILE *f = fopen(scriptFile, "r");
-        if (f == NULL) {
-            fprintf(stderr, "Script file not found!\n");
-            return 1;
+    char *scriptCode;
+    {
+        const char *scriptFile = flag(argc, argv, "-S", "--file", NULL);
+        if (scriptFile != NULL) {
+            FILE *f = fopen(scriptFile, "r");
+            if (f == NULL) {
+                fprintf(stderr, "Script file not found!\n");
+                return 1;
+            }
+            scriptCode = readFile(f);
+            fclose(f);
+            if (scriptCode == NULL) {
+                fprintf(stderr, "Error reading script file!\n");
+                return 1;
+            }
+        } else {
+            const char *f = flag(argc, argv, "-s", "--script", NULL);
+            if (f == NULL) {
+                fprintf(stderr, "Either script code or script file needs to be specified!\n");
+                return 1;
+            }
+            scriptCode = strdup(f);
         }
-        char *str = readFile(f);
-        fclose(f);
-        if (str == NULL) {
-            fprintf(stderr, "Error reading script file!\n");
-            return 1;
-        }
-        cmd = sqparseheap(str);
-        free(str);
-    } else {
-        const char *scriptCode = flag(argc, argv, "-s", "--script", NULL);
-        if (scriptCode == NULL) {
-            fprintf(stderr, "Either script code or script file needs to be specified!\n");
-            return 1;
-        }
-        cmd = sqparseheap(strdup(scriptCode));
     }
+
+    SQCommand cmd = sqparseheap(scriptCode);
 
     const bool debugOutput = flagExist(getFlag(argc, argv, "-d")) ||
                              flagExist(getFlag(argc, argv, "--debug-output"));

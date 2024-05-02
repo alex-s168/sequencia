@@ -47,9 +47,12 @@ typedef struct {
     size_t indent;
 } SQCommandIterState;
 
+// visual indent
 size_t indent(const char *str);
 size_t zvindent(SQStrView view);
 #define zindent(str) zvindent(zview(str))
+// how many ascii chars the indent consists of
+size_t indent_ascii(const char *str);
 
 SQArr sqarr_new(size_t len);
 void sqarr_add(SQArr *arr, SQValue val);
