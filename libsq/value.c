@@ -72,6 +72,8 @@ SQValue sqparse(SQStrView str, size_t *end) {
         return SQVAL_NULL();
     }
 
+    *end = endd - buf;
+
     return SQVAL_NUM(num);
 }
 

@@ -44,9 +44,12 @@ OPERATION(prepend) {
             return SQVAL_NULL();
         }
 
-        DynamicList_insertAllAt(&input.str, 0, arg.str.fixed.data, arg.str.fixed.len);
+        SQStr str = input.str;
 
-        return input;
+        if (DynamicList_insertAllAt(&str, 0, arg.str.fixed.data, arg.str.fixed.len))
+            ERR("Error adding to list!");
+
+        return SQVAL_STR(str);
     }
 
     ERR("\"prepend\" only operates on arrays and strings!");

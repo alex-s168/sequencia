@@ -42,16 +42,20 @@ OPERATION(split) {
                     break;
                 }
 
-                if (*(char*)FixedList_get(acc.fixed, i) != *(char*)FixedList_get(arg.str.fixed, i)) {
+                if (*(char*)FixedList_get(acc.fixed, acc.fixed.len - i - 1) != *(char*)FixedList_get(arg.str.fixed, i)) {
                     match = false;
                     break;
                 }
             }
 
             if (match) {
+                DynamicList_removeRange(&acc, acc.fixed.len - arg.str.fixed.len, acc.fixed.len - 1);
                 sqarr_add(&arr, SQVAL_STR(acc));
                 acc = zempty();
             }
+        }
+        if (acc.fixed.len > 0) {
+            sqarr_add(&arr, SQVAL_STR(acc));
         }
     }
 

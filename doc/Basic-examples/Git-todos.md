@@ -1,6 +1,6 @@
 # List TODOs added / removed in a git repo
 ```shell
-echo "$@" | sq -s '
+echo "$@" | sq --stats -s '
 make 2
 map 1
   prepend "git --no-pager diff --name-only "
@@ -31,11 +31,12 @@ map
     map 0
       join nl
   flatten
-  ranges [-1, -1, 0, -2]
+  rev
   map 0
     make 1
     append -1
   with
+    rev
     ranges
   map
     noempty

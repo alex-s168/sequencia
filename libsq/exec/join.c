@@ -34,8 +34,8 @@ OPERATION(join) {
         }
         is0 = false;
 
-        zfree(b);
         DynamicList_addAll(&res, b.fixed.data, b.fixed.len);
+        zfree(b);
     }
 
     sqfree(input);
