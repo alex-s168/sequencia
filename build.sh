@@ -25,6 +25,9 @@ if [ -z "$1" ]; then
     echo "# libsq.a"
     ./build.exe "libsq.a"
 
+    echo "# libsqanalysis.a"
+    ./build.exe "libsqanalysis.a"
+
     echo "# sq.exe"
     ./build.exe "sq.exe"
 else

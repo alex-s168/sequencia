@@ -53,7 +53,7 @@ SQAOp sqa_ops[] = {
     { .name = "run", .docPage = "run" },
     { .name = "same", .docPage = "same" },
     { .name = "select", .docPage = "select" },
-    { .name = "slit", .docPage = "split" },
+    { .name = "split", .docPage = "split" },
     { .name = "str", .docPage = "str" },
     { .name = "tokens", .docPage = "tokens" },
     { .name = "tolower", .docPage = "tolower toupper" },

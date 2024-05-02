@@ -10,12 +10,13 @@
 
 #include "sq.h"
 #include "../libsq/sequencia.h"
-
+#include "../libsqanalysis/analysis.h"
 #include "../packedcdoc/rt/rt.h"
 
 #define CLI_IMPL
 #include "../minilibs/cli.h"
 #include "../minilibs/filelib.h"
+#include "../minilibs/utils.h"
 
 static const char *flag(const int argc, char **argv, const char *name1, const char *name2, const char *defaul) {
     Flag flag = getFlag(argc, argv, name1);
@@ -161,6 +162,7 @@ int main(const int argc, char **argv) {
         printf("  -h  --help            Show this help message\n");
         printf("      --doc (topic)     Print out the documentation for the given topic OR list all topics available\n");
         printf("      --stats           Print allocation statistics and similar\n");
+        printf("      --analyze         Run code analyzer\n");
         printf("\n");
         return 0;
     }
@@ -213,6 +215,44 @@ int main(const int argc, char **argv) {
             }
             scriptCode = strdup(f);
         }
+    }
+
+    if (flagExist(getFlag(argc, argv, "--analyze"))) {
+        SQAScript script;
+        struct DynamicList lines;
+        DynamicList_init(&lines, sizeof(const char *), gAlloc, 0);
+        SPLITERATE(scriptCode, "\n", line) {
+            char *copy = strdup(line);
+            DynamicList_add(&lines, &copy);
+        }
+        script.lines = lines.fixed;
+        
+        SQAErrors errors;
+        DynamicList_init(&errors, sizeof(SQAError), gAlloc, 0);
+
+        sqa_analyze(script, &errors);
+
+        for (size_t i = 0; i < errors.fixed.len; i ++) {
+            SQAError err = *(SQAError*)FixedList_get(errors.fixed, i);
+            if (err.line >= lines.fixed.len)
+                continue;
+            const char *line = *(const char**)FixedList_get(lines.fixed, err.line);
+            fprintf(stderr, "Error (:%zu): %s\n%s\n", err.line, err.msg, line);
+            if (err.col <= strlen(line)) {
+                for (size_t i = 0; i < err.col; i ++)
+                    fputc(' ', stderr);
+                if (err.len <= strlen(line)) {
+                    for (size_t i = 0; i < err.len; i ++)
+                        fputc('^', stderr);
+                } else {
+                    fputc('^', stderr);
+                }
+                fputc('\n', stderr);
+            }
+            fputc('\n', stderr);
+        }
+
+        return errors.fixed.len > 0 ? 1 : 0;
     }
 
     SQCommand cmd = sqparseheap(scriptCode);

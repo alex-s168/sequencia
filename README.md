@@ -10,6 +10,8 @@ sq - Sequencia utility interpreter
   -g  --debugger        Start interactive debugger; Requires "-I"!
   -h  --help            Show this help message
       --doc (topic)     Print out the documentation for the given topic OR list all topics available
+      --stats           Print memory allocation statistics
+      --analyze         Run code analysis (requires script or script file to be specified)
 ```
 
 ## Example

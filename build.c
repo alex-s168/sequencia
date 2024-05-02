@@ -74,6 +74,7 @@ struct CompileData target_sq_files[] = {
     DEP("packedcdoc/rt/rt.a"),
 
     DEP("build/libsq.a"),
+    DEP("build/libsqanalysis.a"),
 
     DEP("kollektions/build/kollektions.a"),
     DEP("kollektions/build/kallok.a"),

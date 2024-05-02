@@ -46,7 +46,7 @@ SQValue sqparse(SQStrView str, size_t *end) {
         view.fixed.data += sizeof(char) * index;
         view.fixed.len = en;
         const SQStr res = zdupv(view);
-        *end = index;
+        *end = index + en + 1;
         return SQVAL_STR(res);
     }
 
